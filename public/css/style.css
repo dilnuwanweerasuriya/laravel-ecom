@@ -1,0 +1,8 @@
+input, textarea, select{
+    padding: 10px !important;
+    border: 1px solid gray !important;
+}
+
+input#statusToggle.form-check-input::after{
+    padding: 10px;
+}
