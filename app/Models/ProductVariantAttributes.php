@@ -5,24 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProductImage extends Model
+class ProductVariantAttributes extends Model
 {
     use HasFactory;
 
     public $timestamps = false;
 
     protected $fillable = [
-        'product_id',
         'variant_id',
-        'image_path',
+        'attribute_value_id',
     ];
 
-    public function product()
+    public function variants()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(ProductVariant::class);
     }
 
-    public function variant(){
-        return $this->belongsTo(ProductVariant::class);
+    public function attributeValue()
+    {
+        return $this->belongsTo(AttributeValue::class);
     }
 }

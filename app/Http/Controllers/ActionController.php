@@ -5,12 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+
 use App\Models\User;
 use App\Models\Category;
 use App\Models\Brand;
+use App\Models\Attribute;
+use App\Models\AttributeValue;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductVariant;
+use App\Models\ProductVariantAttributes;
 
 class ActionController extends Controller
 {
@@ -80,7 +85,7 @@ class ActionController extends Controller
             toastr()->success('User updated successfully.');
             return redirect('/admin/users');
 
-        } catch (\Throwable $e) {dd($e);
+        } catch (\Throwable $e) {
             DB::rollback();
             toastr()->error('Updating user failed. Please try again.');
             return redirect()->back();
@@ -97,7 +102,7 @@ class ActionController extends Controller
             DB::commit();
 
             return response()->json(['success' => true]);
-        } catch (\Throwable $th) {
+        } catch (\Throwable $e) {
             DB::rollback();
             return response()->json(['error' => 'Failed to delete user.'], 500);
         }
@@ -176,7 +181,7 @@ class ActionController extends Controller
             toastr()->success('Category updated successfully.');
             return redirect('/admin/categories');
 
-        } catch (\Throwable $e) {dd($e);
+        } catch (\Throwable $e) {
             DB::rollback();
             toastr()->error('Updating category failed. Please try again.');
             return redirect()->back();
@@ -192,7 +197,7 @@ class ActionController extends Controller
             DB::commit();
 
             return response()->json(['success' => true]);
-        } catch (\Throwable $th) {
+        } catch (\Throwable $e) {
             DB::rollback();
             return response()->json(['error' => 'Failed to delete user.'], 500);
         }
@@ -230,7 +235,7 @@ class ActionController extends Controller
             return redirect('/admin/brands');
 
         } catch (\Throwable $e) {
-            DB::rollback();dd($e);
+            DB::rollback();
             toastr()->error('Brand creation failed. Please try again.');
             return redirect()->back();
         }
@@ -291,104 +296,203 @@ class ActionController extends Controller
             DB::commit();
 
             return response()->json(['success' => true]);
-        } catch (\Throwable $th) {
+        } catch (\Throwable $e) {
             DB::rollback();
             return response()->json(['error' => 'Failed to delete user.'], 500);
         }
     }
 
-    //Create Product
-    public function productAdd(Request $request){
+    //Create Attribute
+    public function attributeAdd(Request $request){
         try {
             $validated = $request->validate([
                 'name' => 'required|max:255',
-                'slug' => 'required|unique:products,slug|max:255',
+            ]);
+
+            DB::beginTransaction();
+
+            $attribute = Attribute::create([
+                'name' => $request->name,
+            ]);
+
+            DB::commit();
+
+            toastr()->success('Attribute created successfully.');
+            return redirect('/admin/attributes');
+
+        } catch (\Throwable $e) {
+            DB::rollback();
+            toastr()->error('Attribute creation failed. Please try again.');
+            return redirect()->back();
+        }
+    }
+
+    //Update Attribute
+    public function attributeUpdate(Request $request){
+        try {
+            $validated = $request->validate([
+                'name' => 'required|max:255',
+            ]);
+
+            DB::beginTransaction();
+
+            $attribute = Attribute::find($request->id);
+            $attribute->name = $request->name;
+
+            $attribute->save();
+
+            if ($request->has('values')){
+                AttributeValue::where('attribute_id', $request->id)->delete();
+
+                foreach ($request->values as $value) {
+                    $attribValues = AttributeValue::create([
+                        'attribute_id' => $request->id,
+                        'value' => $value
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            toastr()->success('Attribute updated successfully.');
+            return redirect('/admin/attributes');
+
+        } catch (\Throwable $e) {
+            DB::rollback();
+            toastr()->error('Updating attribute failed. Please try again.');
+            return redirect()->back();
+        }
+    }
+
+    //Attribute Delete (AJAX)
+    public function attributeDelete($id){
+        try {
+            DB::beginTransaction();
+            $attribute = Attribute::with('attributeValues')->where('id', $id)->first();
+            
+            if($attribute->attributeValues){
+                $attribute->attributeValues()->delete();
+            }
+            $attribute->delete();
+            DB::commit();
+
+            return response()->json(['success' => true]);
+        } catch (\Throwable $e) {
+            DB::rollback();
+            return response()->json(['error' => 'Failed to delete attribute.'], 500);
+        }
+    }
+
+    //Get Selected Attribute Values
+    public function getAttributeValues($attributeId){
+        $values = AttributeValue::where('attribute_id', $attributeId)
+            ->orderBy('value')
+            ->get(['id', 'value']);
+
+        return response()->json($values);
+    }
+
+    //Create Product
+    public function productAdd(Request $request){
+        try {
+            // Base validation rules
+            $rules = [
+                'name' => 'required|max:255',
                 'description' => 'required',
                 'category' => 'required|exists:categories,id',
                 'brand' => 'required|exists:brands,id',
                 'type' => 'required|in:variant-product,normal-product',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            ]);
+                'images' => 'required|array|max:5',
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ];
 
+            // Add type-specific validation rules
             if ($request->input('type') === 'variant-product') {
-                $variantRules = [
+                $rules = array_merge($rules, [
                     'variants' => 'required|array|min:1',
-                    'variants.*.name' => 'required|string|max:255',
+                    'variants.*.sku' => 'required|string|max:255',
                     'variants.*.price' => 'required|numeric|min:0',
                     'variants.*.stock' => 'required|integer|min:0',
-                    'variants.*.image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                ];
-
-                $request->validate($variantRules);
+                    'variants.*.images' => 'required|array|max:5',
+                    'variants.*.images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+                ]);
+            } else {
+                $rules = array_merge($rules, [
+                    'sku' => 'required|string|max:255',
+                    'price' => 'required|numeric|min:0',
+                    'stock' => 'required|integer|min:0',
+                ]);
             }
+
+            // Validate all rules once
+            $validated = $request->validate($rules);
 
             DB::beginTransaction();
 
-            $imagePath = null;
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path('storage/uploads/products'), $imageName);
-                $imagePath = 'storage/uploads/products/' . $imageName;
-            } else {
-                $imagePath = null;
-            }
+            $saveImage = function ($imageFile) {
+                $imageName = time() . '_' . uniqid() . '.' . $imageFile->getClientOriginalExtension();
+                $imageFile->move(public_path('storage/uploads/products'), $imageName);
+                return 'storage/uploads/products/' . $imageName;
+            };
 
-            if ($request->input('type') === 'variant-product') {
-                $price = $request->variants[0]['price'];
-                $stock = $request->variants[0]['stock'];
-            } else {
-                $price = $request->price;
-                $stock = $request->stock;
-            }
-
+            // Create product
             $product = Product::create([
                 'name' => $request->name,
-                'slug' => $request->slug,
                 'description' => $request->description,
                 'type' => $request->type,
                 'category_id' => $request->category,
                 'brand_id' => $request->brand,
-                'price' => $price,
-                'stock' => $stock,
             ]);
 
-            if ($imagePath) {
-                $productImage = ProductImage::create([
+            // Save multiple product images
+            foreach ($request->file('images') as $imageFile) {
+                $imagePath = $saveImage($imageFile);
+
+                $image = ProductImage::create([
                     'product_id' => $product->id,
                     'image_path' => $imagePath,
                 ]);
-
-                $product->thumbnail = $productImage->id;
-                $product->save();
             }
 
             if ($request->input('type') === 'variant-product') {
                 foreach ($request->variants as $index => $variantData) {
-                    $variantImagePath = null;
-
-                    if ($request->hasFile("variants.{$index}.image")) {
-                        $variantImage = $request->file("variants.{$index}.image");
-                        $variantImageName = time() . '_' . uniqid() . '.' . $variantImage->getClientOriginalExtension();
-                        $variantImage->move(public_path('storage/uploads/products'), $variantImageName);
-                        $variantImagePath = 'storage/uploads/products/' . $variantImageName;
-                    }
-
                     $variant = ProductVariant::create([
                         'product_id' => $product->id,
-                        'variant_name' => $variantData['name'],
-                        'price' => $variantData['price'],
-                        'stock' => $variantData['stock'],
+                        'sku'        => $variantData['sku'],
+                        'price'      => $variantData['price'],
+                        'stock'      => $variantData['stock'],
                     ]);
 
-                    if ($variantImagePath) {
-                        ProductImage::create([
-                            'product_id' => $product->id,
-                            'variant_id' => $variant->id, 
-                            'image_path' => $variantImagePath,
-                        ]);
+                    if ($request->hasFile("variants.$index.images")) {
+                        foreach ($request->file("variants.$index.images") as $variantImageFile) {
+                            $variantImagePath = $saveImage($variantImageFile);
+                            ProductImage::create([
+                                'product_id' => $product->id,
+                                'variant_id' => $variant->id,
+                                'image_path' => $variantImagePath,
+                            ]);
+                        }
+                    }
+
+                    if (!empty($variantData['attributes'])) {
+                        foreach ($variantData['attributes'] as $attribData) {
+                            ProductVariantAttributes::create([
+                                'variant_id'           => $variant->id,
+                                'attribute_value_id'   => $attribData['value_id'],
+                            ]);
+                        }
                     }
                 }
+            } else {
+                $variant = ProductVariant::create([
+                    'product_id' => $product->id,
+                    'sku' => $request->sku,
+                    'price' => $request->price,
+                    'stock' => $request->stock,
+                ]);
+
+                $image = ProductImage::where('product_id', $product->id)->where('variant_id', 0)->first();
+                $image->variant_id = $variant->id;
             }
 
             DB::commit();
@@ -400,6 +504,47 @@ class ActionController extends Controller
             DB::rollback();dd($e);
             toastr()->error('Product creation failed. Please try again.');
             return redirect()->back();
+        }
+    }
+
+    //Product Update
+    public function productUpdate(Request $request){
+        dd($request);
+    }
+
+    //Product Delete (AJAX)
+    public function productDelete($id){
+        try {
+            DB::beginTransaction();
+
+            $product = Product::findOrFail($id);
+            $productVariantIds = ProductVariant::where('product_id', $product->id)->pluck('id');
+
+            if ($product->type === 'variant-product') {
+                ProductVariantAttributes::whereIn('variant_id', $productVariantIds)->delete();
+            }
+
+            ProductVariant::where('product_id', $product->id)->delete();
+
+            $images = ProductImage::where('product_id', $product->id)->get();
+            foreach ($images as $image) {
+                $filePath = public_path('storage/uploads/products/' . basename($image->image_path));
+                
+                if (file_exists($filePath)) {
+                    @unlink($filePath);
+                }
+
+                $image->delete();
+            }
+
+            $product->delete();
+
+            DB::commit();
+
+            return response()->json(['success' => true]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Failed to delete product.'], 500);
         }
     }
 }

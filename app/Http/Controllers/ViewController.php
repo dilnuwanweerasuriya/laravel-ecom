@@ -92,7 +92,7 @@ class ViewController extends DataController
     public function brands(){
         $data = array(
             'view' => 'backend/brand/brands',
-            'title' => 'Categories',
+            'title' => 'Brands',
             'brands' => $this->getBrands(),
         );
 
@@ -116,7 +116,39 @@ class ViewController extends DataController
             'view' => 'backend/brand/brandEdit',
             'title' => 'Edit brand',
             'brand' => $this->getBrandData($id),
-            'brands' => $this->getBrands(),
+        );
+
+        return $this->default($data);
+    }
+
+    //Attributes Function
+    public function attributes(){
+        $data = array(
+            'view' => 'backend/attribute/attributes',
+            'title' => 'Attributes',
+            'attributes' => $this->getAttributes(),
+        );
+
+        return $this->default($data);
+    }
+
+    //Attribute Create Function
+    public function attributeCreate(){
+        $data = array(
+            'view' => 'backend/attribute/attributeCreate',
+            'title' => 'Create attribute',
+            'attributes' => $this->getAttributes(),
+        );
+
+        return $this->default($data);
+    }
+
+    //Attribute Edit Function
+    public function attributeEdit($id){
+        $data = array(
+            'view' => 'backend/attribute/attributeEdit',
+            'title' => 'Edit attribute',
+            'attribute' => $this->getAttributeData($id),
         );
 
         return $this->default($data);
@@ -126,7 +158,7 @@ class ViewController extends DataController
     public function products(){
         $data = array(
             'view' => 'backend/product/products',
-            'title' => 'Categories',
+            'title' => 'Products',
             'products' => $this->getProducts(),
         );
 
@@ -139,6 +171,7 @@ class ViewController extends DataController
             'view' => 'backend/product/productCreate',
             'title' => 'Create product',
             'products' => $this->getProducts(),
+            'attributes' => $this->getAttributes(),
             'categories' => $this->getCategories(),
             'brands' => $this->getBrands(),
         );
@@ -152,7 +185,11 @@ class ViewController extends DataController
             'view' => 'backend/product/productEdit',
             'title' => 'Edit product',
             'product' => $this->getProductData($id),
-            'products' => $this->getProducts(),
+            'attributes' => $this->getAttributes(),
+            'categories' => $this->getCategories(),
+            'brands' => $this->getBrands(),
+            'selected_attributes' => $this->getSelectedAttributes($id)['attributes'],
+            'selected_attribute_values' => $this->getSelectedAttributes($id)['attribValues'],
         );
 
         return $this->default($data);

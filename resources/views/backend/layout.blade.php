@@ -81,6 +81,13 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link {{ request()->is('admin/attributes*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="/admin/attributes">
+                        <i class="material-symbols-rounded opacity-5">box</i>
+                        <span class="nav-link-text ms-1">Attributes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link {{ request()->is('admin/products*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
                         href="/admin/products">
                         <i class="material-symbols-rounded opacity-5">inventory</i>

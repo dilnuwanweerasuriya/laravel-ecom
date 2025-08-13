@@ -21,8 +21,6 @@
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Product
                                     Name</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                    Slug</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                     Description</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                     Product Type</th>
@@ -41,10 +39,6 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <p class="text-xs font-weight-bold mb-0 text-capitalize">{{ $product->slug }}
-                                        </p>
-                                    </td>
-                                    <td>
                                         <p class="text-xs font-weight-bold mb-0 text-capitalize">
                                             {{ $product->description }}</p>
                                     </td>
@@ -53,8 +47,8 @@
                                         </p>
                                     </td>
                                     <td>
-                                        @if ($product->thumbnail)
-                                            <img src="{{ asset($product->Images[0]->image_path) }}" alt="Product Image"
+                                        @if ($product->images)
+                                            <img src="{{ asset($product->images[0]->image_path) }}" alt="Product Image"
                                                 style="height: 40px;">
                                         @endif
                                     </td>
@@ -85,12 +79,11 @@
                                 <!-- Product Details Modal -->
                                 <div class="modal fade" id="productModal{{ $product->id }}" tabindex="-1"
                                     aria-labelledby="productModalLabel{{ $product->id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-dialog modal-lg modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="productModalLabel{{ $product->id }}">
-                                                    Product
-                                                    Details</h5>
+                                                    Product Details</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                     aria-label="Close"></button>
                                             </div>
@@ -99,13 +92,45 @@
                                                 <p><strong>Slug:</strong> {{ $product->slug }}</p>
                                                 <p><strong>Description:</strong> {{ $product->description }}</p>
                                                 <p><strong>Type:</strong> {{ $product->type }}</p>
-                                                <p><strong>Price:</strong> LKR {{ number_format($product->price, 2) }}</p>
                                                 <p><strong>Image:</strong>
-                                                    @if ($product->thumbnail)
+                                                    @if ($product->images && isset($product->Images[0]))
                                                         <img src="{{ asset($product->Images[0]->image_path) }}"
                                                             alt="Product Image" style="height: 50px;">
                                                     @endif
                                                 </p>
+
+                                                @if ($product->type == 'variant-product')
+                                                    <strong class="d-block mb-3">Variant Details</strong>
+
+                                                    <div class="row">
+                                                        @foreach ($product->variants as $index => $variant)
+                                                            <div class="col-md-6 mb-4">
+                                                                <div class="border rounded p-3 mb-3 bg-light">
+                                                                    <h6 class="mb-2">Variant {{ $index + 1 }}</h6>
+                                                                    <p><strong>Variant SKU:</strong>
+                                                                        {{ $variant->sku }}</p>
+                                                                    <p><strong>Image:</strong>
+                                                                        @foreach ($variant->images as $image)
+                                                                            <img src="{{ asset($image->image_path) }}"
+                                                                                alt="Variant Image"
+                                                                                style="height: 60px; width: auto;">
+                                                                        @endforeach
+                                                                    </p>
+                                                                    <p><strong>Variant Price:</strong> LKR
+                                                                        {{ number_format($variant->price, 2) }}</p>
+                                                                    <p><strong>Variant Stock:</strong>
+                                                                        {{ $variant->stock }}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @else
+                                                    <p><strong>SKU: </strong> {{ $product->variants[0]->sku }}</p>
+                                                    <p><strong>Price:</strong> LKR
+                                                        {{ number_format($product->variants[0]->price, 2) }}</p>
+                                                    <p><strong>Stock:</strong> {{ $product->variants[0]->stock }}</p>
+                                                @endif
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-sm bg-gradient-secondary"

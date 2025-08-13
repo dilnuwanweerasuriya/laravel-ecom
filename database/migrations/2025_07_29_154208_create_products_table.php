@@ -16,12 +16,8 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
             $table->foreignId('brand_id')->constrained('brands')->cascadeOnDelete();
             $table->string('name');
-            $table->string('slug')->unique();
             $table->text('description')->nullable();
             $table->string('type')->nullable();
-            $table->decimal('price', 10, 2);
-            $table->integer('stock');
-            $table->string('thumbnail')->nullable();
             $table->timestamps();
         });
     }

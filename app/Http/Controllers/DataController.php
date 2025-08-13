@@ -6,7 +6,11 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\Brand;
+use App\Models\Attribute;
+use App\Models\AttributeValue;
 use App\Models\Product;
+use App\Models\ProductVariant;
+use App\Models\ProductVariantAttributes;
 
 class DataController extends Controller
 {
@@ -46,15 +50,41 @@ class DataController extends Controller
         return $brand;
     }
 
+    //Get Attributes
+    public function getAttributes(){
+        $attributes = Attribute::with('attributeValues')->get();
+        return $attributes;
+    }
+
+    //Get Attribute Data
+    public function getAttributeData($id){
+        $attribute = Attribute::with('attributeValues')->where('id', $id)->first();
+        return $attribute;
+    }
+
     //Get Products
     public function getProducts(){
-        $products = Product::with('images')->paginate(10);
+        $products = Product::with('images','variants.images')->paginate(10);
         return $products;
     }
 
     //Get Product Data
     public function getProductData($id){
-        $product = Product::where('id', $id)->first();
+        $product = Product::with('images','variants.images','variants.attribValues')->where('id', $id)->first();
         return $product;
+    }
+
+    //Get Selected Attributes For Product
+    public function getSelectedAttributes($id){
+        $variant = ProductVariant::where('product_id', $id)->pluck('id');
+        $attribValues = ProductVariantAttributes::whereIn('variant_id', $variant)->pluck('attribute_value_id');
+        $attributes = AttributeValue::whereIn('id', $attribValues)->pluck('attribute_id');
+
+        $data = [
+            'attributes' => $attributes,
+            'attribValues' => $attribValues
+        ];
+
+        return $data;
     }
 }

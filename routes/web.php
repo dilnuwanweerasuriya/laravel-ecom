@@ -61,6 +61,21 @@ Route::group([
 
     Route::post('/admin/brands/delete/{id}', 'ActionController@brandDelete');
 
+    //attribute
+    Route::get('/admin/attributes', 'ViewController@attributes');
+
+    Route::get('/admin/attributes/create', 'ViewController@attributeCreate');
+
+    Route::post('/admin/addAttribute', 'ActionController@attributeAdd');
+
+    Route::get('/admin/attributes/edit/{id}', 'ViewController@attributeEdit');
+
+    Route::post('/admin/updateAttribute', 'ActionController@attributeUpdate');
+
+    Route::post('/admin/attributes/delete/{id}', 'ActionController@attributeDelete');
+
+    Route::get('/admin/attribute-values/{attribute}', 'ActionController@getAttributeValues');
+
     //product
     Route::get('/admin/products', 'ViewController@products');
 

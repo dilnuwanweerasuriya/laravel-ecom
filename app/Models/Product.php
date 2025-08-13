@@ -13,13 +13,8 @@ class Product extends Model
         'category_id',
         'brand_id',
         'name',
-        'slug',
         'description',
         'type',
-        'price',
-        'stock',
-        'brand',
-        'thumbnail',
     ];
 
     public function category()
@@ -34,7 +29,7 @@ class Product extends Model
 
     public function images()
     {
-        return $this->hasMany(ProductImage::class);
+        return $this->hasMany(ProductImage::class, 'product_id', 'id')->where('variant_id', 0);
     }
 
     public function variants()

@@ -9,11 +9,9 @@ class ProductVariant extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
-
     protected $fillable = [
         'product_id',
-        'variant_name',
+        'sku',
         'price',
         'stock',
     ];
@@ -21,5 +19,15 @@ class ProductVariant extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class, 'variant_id');
+    }
+
+    public function attribValues()
+    {
+        return $this->hasMany(ProductVariantAttributes::class, 'variant_id');
     }
 }
