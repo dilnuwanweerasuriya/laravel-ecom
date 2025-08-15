@@ -23,10 +23,10 @@ class ProductVariant extends Model
 
     public function images()
     {
-        return $this->hasMany(ProductImage::class, 'variant_id');
+        return $this->hasMany(VariantImage::class, 'variant_id');
     }
 
-    public function attribValues()
+    public function attributes()
     {
         return $this->hasMany(ProductVariantAttributes::class, 'variant_id');
     }

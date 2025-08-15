@@ -43,13 +43,18 @@
                                             {{ $product->description }}</p>
                                     </td>
                                     <td>
-                                        <p class="text-xs font-weight-bold mb-0 text-capitalize">{{ $product->type }}
+                                        <p class="text-xs font-weight-bold mb-0 text-capitalize">
+                                            {{ $product->has_variants == 0 ? 'Simple Product' : 'Variant Product' }}
                                         </p>
                                     </td>
                                     <td>
                                         @if ($product->images)
-                                            <img src="{{ asset($product->images[0]->image_path) }}" alt="Product Image"
-                                                style="height: 40px;">
+                                            @foreach ($product->images as $image)
+                                                @if ($image->is_primary == 1)
+                                                    <img src="{{ asset($image->image_url) }}" alt="Product Image"
+                                                        style="height: 60px;">
+                                                @endif
+                                            @endforeach
                                         @endif
                                     </td>
                                     <td class="align-middle">
@@ -89,17 +94,22 @@
                                             </div>
                                             <div class="modal-body">
                                                 <p><strong>Product:</strong> {{ $product->name }}</p>
-                                                <p><strong>Slug:</strong> {{ $product->slug }}</p>
                                                 <p><strong>Description:</strong> {{ $product->description }}</p>
-                                                <p><strong>Type:</strong> {{ $product->type }}</p>
+                                                <p><strong>Type:</strong>
+                                                    {{ $product->has_variants == 0 ? 'Simple Product' : 'Variant Product' }}
+                                                </p>
                                                 <p><strong>Image:</strong>
-                                                    @if ($product->images && isset($product->Images[0]))
-                                                        <img src="{{ asset($product->Images[0]->image_path) }}"
-                                                            alt="Product Image" style="height: 50px;">
+                                                    @if ($product->images)
+                                                        @foreach ($product->images as $image)
+                                                            @if ($image->is_primary == 1)
+                                                                <img src="{{ asset($image->image_url) }}"
+                                                                    alt="Product Image" style="height: 50px;">
+                                                            @endif
+                                                        @endforeach
                                                     @endif
                                                 </p>
 
-                                                @if ($product->type == 'variant-product')
+                                                @if ($product->has_variants == 1)
                                                     <strong class="d-block mb-3">Variant Details</strong>
 
                                                     <div class="row">
@@ -111,9 +121,10 @@
                                                                         {{ $variant->sku }}</p>
                                                                     <p><strong>Image:</strong>
                                                                         @foreach ($variant->images as $image)
-                                                                            <img src="{{ asset($image->image_path) }}"
-                                                                                alt="Variant Image"
-                                                                                style="height: 60px; width: auto;">
+                                                                            @if ($image->is_primary == 1)
+                                                                                <img src="{{ asset($image->image_url) }}"
+                                                                                    alt="Variant Image" style="height: 50px;">
+                                                                            @endif
                                                                         @endforeach
                                                                     </p>
                                                                     <p><strong>Variant Price:</strong> LKR
@@ -126,10 +137,10 @@
                                                         @endforeach
                                                     </div>
                                                 @else
-                                                    <p><strong>SKU: </strong> {{ $product->variants[0]->sku }}</p>
+                                                    <p><strong>SKU: </strong> {{ $product->sku }}</p>
                                                     <p><strong>Price:</strong> LKR
-                                                        {{ number_format($product->variants[0]->price, 2) }}</p>
-                                                    <p><strong>Stock:</strong> {{ $product->variants[0]->stock }}</p>
+                                                        {{ number_format($product->price, 2) }}</p>
+                                                    <p><strong>Stock:</strong> {{ $product->stock }}</p>
                                                 @endif
                                             </div>
                                             <div class="modal-footer">

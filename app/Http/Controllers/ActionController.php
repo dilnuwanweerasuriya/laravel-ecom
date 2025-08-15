@@ -15,6 +15,7 @@ use App\Models\AttributeValue;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductVariant;
+use App\Models\VariantImage;
 use App\Models\ProductVariantAttributes;
 
 class ActionController extends Controller
@@ -399,17 +400,19 @@ class ActionController extends Controller
             $rules = [
                 'name' => 'required|max:255',
                 'description' => 'required',
-                'category' => 'required|exists:categories,id',
-                'brand' => 'required|exists:brands,id',
-                'type' => 'required|in:variant-product,normal-product',
+                'category_id' => 'required|exists:categories,id',
+                'brand_id' => 'required|exists:brands,id',
+                'product_type' => 'required|in:variant,simple',
                 'images' => 'required|array|max:5',
                 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ];
 
             // Add type-specific validation rules
-            if ($request->input('type') === 'variant-product') {
+            if ($request->input('product_type') === 'variant') {
                 $rules = array_merge($rules, [
                     'variants' => 'required|array|min:1',
+                    'variants.*.attributes' => 'required|array',
+                    'variants.*.values' => 'required|array',
                     'variants.*.sku' => 'required|string|max:255',
                     'variants.*.price' => 'required|numeric|min:0',
                     'variants.*.stock' => 'required|integer|min:0',
@@ -439,22 +442,26 @@ class ActionController extends Controller
             $product = Product::create([
                 'name' => $request->name,
                 'description' => $request->description,
-                'type' => $request->type,
-                'category_id' => $request->category,
-                'brand_id' => $request->brand,
+                'has_variants' => $request->product_type == 'simple' ? 0 : 1,
+                'category_id' => $request->category_id,
+                'brand_id' => $request->brand_id,
+                'sku' => $request->product_type == 'simple' ? $request->sku : null,
+                'price' => $request->product_type == 'simple' ? $request->price : null,
+                'stock' => $request->product_type == 'simple' ? $request->stock : null,
             ]);
 
             // Save multiple product images
-            foreach ($request->file('images') as $imageFile) {
+            foreach ($request->file('images') as $index => $imageFile) {
                 $imagePath = $saveImage($imageFile);
 
                 $image = ProductImage::create([
                     'product_id' => $product->id,
-                    'image_path' => $imagePath,
+                    'image_url' => $imagePath,
+                    'is_primary' => $request->primary_product_image == null ? 1 : 0 ,
                 ]);
             }
 
-            if ($request->input('type') === 'variant-product') {
+            if ($request->input('product_type') === 'variant') {
                 foreach ($request->variants as $index => $variantData) {
                     $variant = ProductVariant::create([
                         'product_id' => $product->id,
@@ -464,35 +471,29 @@ class ActionController extends Controller
                     ]);
 
                     if ($request->hasFile("variants.$index.images")) {
-                        foreach ($request->file("variants.$index.images") as $variantImageFile) {
+                        foreach ($request->file("variants.$index.images") as $key => $variantImageFile) {
                             $variantImagePath = $saveImage($variantImageFile);
-                            ProductImage::create([
-                                'product_id' => $product->id,
+
+                            $primaryVariantImage = $variantData['primary_image'] ?? 0;
+
+                            VariantImage::create([
                                 'variant_id' => $variant->id,
-                                'image_path' => $variantImagePath,
+                                'image_url' => $variantImagePath,
+                                'is_primary' => ((string)$key === (string)$primaryVariantImage) ? 1 : 0,
                             ]);
                         }
                     }
 
-                    if (!empty($variantData['attributes'])) {
-                        foreach ($variantData['attributes'] as $attribData) {
-                            ProductVariantAttributes::create([
-                                'variant_id'           => $variant->id,
-                                'attribute_value_id'   => $attribData['value_id'],
-                            ]);
-                        }
+                    foreach ($variantData['attributes'] as $index => $attrId) {
+                        $attribute = Attribute::find($attrId);
+
+                        $variant->attributes()->create([
+                            'variant_id' => $variant->id,
+                            'attribute_name' => $attribute->name,
+                            'attribute_value' => $variantData['values'][$index],
+                        ]);
                     }
                 }
-            } else {
-                $variant = ProductVariant::create([
-                    'product_id' => $product->id,
-                    'sku' => $request->sku,
-                    'price' => $request->price,
-                    'stock' => $request->stock,
-                ]);
-
-                $image = ProductImage::where('product_id', $product->id)->where('variant_id', 0)->first();
-                $image->variant_id = $variant->id;
             }
 
             DB::commit();

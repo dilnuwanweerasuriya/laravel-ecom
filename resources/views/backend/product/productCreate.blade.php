@@ -1,3 +1,9 @@
+<style>
+    .image-wrapper.primary img {
+        border: 3px solid red !important;
+    }
+</style>
+
 <div class="row">
     <div class="col-12">
         <div class="card my-4">
@@ -7,107 +13,97 @@
                 </div>
             </div>
             <div class="card-body pt-4 px-4">
-                <form method="POST" action="/admin/addProduct" enctype="multipart/form-data">
+                <form action="/admin/addProduct" id="productForm" method="POST" enctype="multipart/form-data">
                     @csrf
 
-                    {{-- Product Name --}}
                     <div class="row">
-                        <div class="col-md-12 mb-4">
+                        <!-- Product Name -->
+                        <div class="mb-3">
                             <label class="form-label">Product Name</label>
-                            <input type="text" id="product" name="name" class="form-control"
-                                placeholder="Product Name" required>
+                            <input type="text" id="productName" name="name" class="form-control" required>
                         </div>
-                    </div>
 
-                    {{-- Product Description --}}
-                    <div class="row">
-                        <div class="col-md-12 mb-4">
-                            <label class="form-label">Product Description</label>
-                            <textarea class="form-control" name="description" id="description" required></textarea>
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" class="form-control"></textarea>
                         </div>
-                    </div>
 
-                    {{-- Product Image --}}
-                    <div class="col-md-6 mb-4">
-                        <label class="form-label">Images (Max 5)</label>
-                        <input id="productImagesInput" class="form-control" type="file" name="images[]"
-                            accept="image/*" multiple onchange="previewProductImages(event)">
-                        <div id="productImagePreviewContainer" class="d-flex flex-wrap mt-2"></div>
-                    </div>
+                        <!-- Product Images -->
+                        <div class="mb-3">
+                            <label class="form-label">Product Images (Max 5)</label>
+                            <input type="file" id="productImages" name="images[]" class="form-control" multiple
+                                accept="image/*">
+                            <div id="productImagePreview" class="d-flex gap-2 mt-2 flex-wrap"></div>
+                            <input type="hidden" name="primary_product_image" id="primaryProductImage">
+                        </div>
 
-                    <hr>
+                        <hr>
 
-                    {{-- Category & Brand --}}
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
+                        <!-- Category -->
+                        <div class="col-6 mb-3">
                             <label class="form-label">Category</label>
-                            <select class="select form-control" name="category" required>
-                                <option value="">Select category</option>
-                                @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            <select name="category_id" class="form-select" required>
+                                <option value="">Select Category</option>
+                                @foreach ($categories as $cat)
+                                    <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                                 @endforeach
                             </select>
                         </div>
 
-                        <div class="col-md-6 mb-4">
+                        <div class="col-6 mb-3">
                             <label class="form-label">Brand</label>
-                            <select class="select form-control" name="brand">
-                                <option value="">Select brand</option>
+                            <select name="brand_id" class="form-select" required>
+                                <option value="">Select Brand</option>
                                 @foreach ($brands as $brand)
                                     <option value="{{ $brand->id }}">{{ $brand->name }}</option>
                                 @endforeach
                             </select>
                         </div>
-                    </div>
 
-                    <hr>
-
-                    {{-- Product Type --}}
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
+                        <!-- Product Type -->
+                        <div class="col-6 mb-3">
                             <label class="form-label">Product Type</label>
-                            <select class="select form-control" name="type" id="type" required>
-                                <option value="">Select product type</option>
-                                <option value="variant-product">Variant Product</option>
-                                <option value="normal-product">Normal Product</option>
+                            <select id="productType" name="product_type" class="form-select" required>
+                                <option value="simple">Simple</option>
+                                <option value="variant">Variant</option>
                             </select>
                         </div>
 
-                        <div id="normal-product-sku" class="col-md-6 mb-4 d-none">
-                            <label class="form-label">SKU</label>
-                            <input type="text" class="form-control sku" name="sku" placeholder="Auto-generated"
-                                readonly required>
+                        <hr>
+
+                        <!-- Simple Product Fields -->
+                        <div id="simpleFields" class="mb-3">
+                            <div class="row">
+                                <div class="col-6 mb-2">
+                                    <label class="form-label">SKU</label>
+                                    <input type="text" id="skuField" name="sku" class="form-control" readonly>
+                                </div>
+
+                                <div class="col-6 mb-2">
+                                    <label>Price</label>
+                                    <input type="number" step="0.01" name="price" class="form-control">
+                                </div>
+                                <div class="col-6 mb-2">
+                                    <label>Stock</label>
+                                    <input type="number" name="stock" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Variant Section -->
+                        <div id="variantSection" class="d-none">
+                            <h5>Variants</h5>
+                            <div id="variantsContainer"></div>
+                            <button type="button" id="addVariantBtn" class="btn btn-primary btn-sm mt-2">Add
+                                Variant</button>
                         </div>
                     </div>
 
-                    {{-- Variant Section --}}
-                    <div id="variant-section" class="d-none">
-                        <label class="form-label">Product Variants</label>
-                        <div id="variant-container"></div>
-                        <button type="button" class="btn btn-sm btn-outline-dark my-3" onclick="addVariant()">Add
-                            Variant</button>
-                    </div>
-
-                    {{-- Default Price/Stock for non-variant products --}}
-                    <div id="default-price-stock">
-                        <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label">Price</label>
-                                <input type="text" id="price" name="price" class="form-control"
-                                    placeholder="Product Price" required>
-                            </div>
-                            <div class="col-md-6 mb-4">
-                                <label class="form-label">Stock</label>
-                                <input type="number" id="stock" name="stock" class="form-control"
-                                    placeholder="Product Stock" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Submit --}}
                     <div class="text-end">
                         <button type="submit" class="btn bg-gradient-dark">Create</button>
                     </div>
+                </form>
                 </form>
             </div>
         </div>
@@ -115,306 +111,422 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        $('#type').on('change', function() {
-            const type = $(this).val();
-            if (type === 'variant-product') {
-                $('#variant-section').removeClass('d-none');
-                $('#default-price-stock').addClass('d-none');
-                $('#normal-product-sku').addClass('d-none');
-                $('#price, #stock').prop('required', false);
-            } else {
-                $('#variant-section').addClass('d-none');
-                $('#default-price-stock').removeClass('d-none');
-                $('#normal-product-sku').removeClass('d-none');
-                $('#price, #stock').prop('required', true);
+    const attributes = @json($attributes);
+    let variantIndex = 0;
 
-                const productNameSlug = $('#product').val().trim().toLowerCase().replace(/\s+/g, '-');
-                $('.sku').val(productNameSlug);
-            }
-        });
+    // SKU generator
+    function slugify(text) {
+        return text.toString().toLowerCase().trim()
+            .replace(/\s+/g, '-')
+            .replace(/[^\w\-]+/g, '')
+            .replace(/\-\-+/g, '-');
+    }
+
+    function generateSku(productName, attrValues = []) {
+        let sku = slugify(productName);
+        if (attrValues.length) {
+            sku += '-' + attrValues.map(v => slugify(v)).join('-');
+        }
+        return sku;
+    }
+
+    // Product type toggle
+    document.getElementById('productType').addEventListener('change', function() {
+        document.getElementById('variantSection').classList.toggle('d-none', this.value !== 'variant');
+        document.getElementById('simpleFields').classList.toggle('d-none', this.value === 'variant');
+        updateProductSku();
     });
 
-    let variantIndex = 0;
-    let productImages = [];
-    let variantImages = {};
+    // Update SKU for simple product
+    document.getElementById('productName').addEventListener('input', updateProductSku);
 
-    // ===== Get Already Used Attributes in a Variant =====
-    function getUsedAttributesInVariant(variantIndex) {
-        let used = [];
-        $(`.variant-attributes[data-variant-index="${variantIndex}"] .attribute-select`).each(function() {
-            let val = $(this).val();
-            if (val) used.push(val);
-        });
-        return used;
+    function updateProductSku() {
+        if (document.getElementById('productType').value === 'simple') {
+            document.getElementById('skuField').value = generateSku(document.getElementById('productName').value);
+        }
     }
 
-    // ===== Refresh Attribute Dropdowns (remove duplicates) =====
-    function refreshAttributeDropdowns(variantIndex) {
-        let usedAttrs = getUsedAttributesInVariant(variantIndex);
-        $(`.variant-attributes[data-variant-index="${variantIndex}"] .attribute-select`).each(function() {
-            let currentVal = $(this).val();
-            $(this).find('option').each(function() {
-                let optVal = $(this).val();
-                if (!optVal) return;
-                if (usedAttrs.includes(optVal) && optVal !== currentVal) {
-                    $(this).prop('disabled', true);
-                } else {
-                    $(this).prop('disabled', false);
-                }
-            });
-        });
-    }
-
-    // ===== Attribute Row HTML =====
-    function getAttributeRowHTML(variantIndex, attrIndex, selectedAttr = "") {
-        let usedAttrs = getUsedAttributesInVariant(variantIndex);
-        let options = '<option value="">Select Attribute</option>';
-        @foreach ($attributes as $attribute)
-            options += `<option value="{{ $attribute->id }}" 
-                        ${selectedAttr == "{{ $attribute->id }}" ? "selected" : ""} 
-                        ${usedAttrs.includes("{{ $attribute->id }}") && selectedAttr != "{{ $attribute->id }}" ? "disabled" : ""}>
-                        {{ $attribute->name }}
-                    </option>`;
-        @endforeach
-
-        return `
-        <div class="row attribute-row mb-2" data-attr-index="${attrIndex}">
-            <div class="col-md-5">
-                <select class="form-control attribute-select" 
-                        data-variant="${variantIndex}" 
-                        data-attr="${attrIndex}" required>
-                    ${options}
-                </select>
+    // Add Variant
+    document.getElementById('addVariantBtn').addEventListener('click', () => {
+        let variantHTML = `
+        <div class="card p-3 mb-3 variant-card" data-variant-index="${variantIndex}">
+            <div class="row">
+                <div class="col-6">
+                    <h6 class="variant-title">Variant</h6>
+                </div>
+                <div class="col-6 text-end">
+                    <button type="button" class="btn btn-danger btn-sm remove-variant">Remove</button>
+                </div>
             </div>
-            <div class="col-md-6">
-                <select class="form-control value-select" 
-                        name="variants[${variantIndex}][attributes][${attrIndex}][value_id]" 
-                        required disabled>
+            <div class="variant-attributes"></div>
+            <div class="text-start mt-2">
+                <button type="button" class="btn btn-secondary btn-sm addAttributeBtn">Add Attribute</button>
+            </div>
+            <div class="row">
+                <div class="col-6 mt-2">
+                    <label>Price</label>
+                    <input type="number" step="0.01" name="variants[${variantIndex}][price]" class="form-control">
+                </div>
+                <div class="col-6 mt-2">
+                    <label>Stock</label>
+                    <input type="number" name="variants[${variantIndex}][stock]" class="form-control">
+                </div>
+                <div class="col-6 mt-2">
+                    <label>SKU</label>
+                    <input type="text" name="variants[${variantIndex}][sku]" class="form-control variant-sku" readonly>
+                </div>
+                <div class="mt-2">
+                    <label>Variant Images (Max 5)</label>
+                    <input type="file" class="form-control variant-images" name="variants[${variantIndex}][images][]" multiple accept="image/*">
+                    <div class="variant-image-preview d-flex gap-2 mt-2 flex-wrap"></div>
+                </div>
+            </div>
+        </div>
+    `;
+        document.getElementById('variantsContainer').insertAdjacentHTML('beforeend', variantHTML);
+        variantIndex++;
+        updateVariantTitles();
+    });
+
+    // Delegate Add Attribute
+    document.getElementById('variantsContainer').addEventListener('click', function(e) {
+        if (e.target.classList.contains('addAttributeBtn')) {
+            let variantCard = e.target.closest('.card');
+            let variantIndex = variantCard.dataset.variantIndex;
+
+            let usedAttrIds = [...variantCard.querySelectorAll('.attr-select')]
+                .map(s => s.value).filter(v => v);
+
+            let attrOptions = attributes
+                .filter(a => !usedAttrIds.includes(a.id.toString()))
+                .map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+
+            let attrHTML = `
+            <div class="d-flex gap-2 mt-2 attr-row">
+                <select name="variants[${variantIndex}][attributes][]" class="form-select attr-select" required>
+                    <option value="">Select Attribute</option>
+                    ${attrOptions}
+                </select>
+                <select name="variants[${variantIndex}][values][]" class="form-select value-select" required>
                     <option value="">Select Value</option>
                 </select>
+                <button type="button" class="btn btn-danger btn-sm removeAttrBtn">X</button>
             </div>
-            <div class="col-md-1">
-                <button type="button" class="btn btn-sm btn-outline-danger" 
-                        onclick="removeAttributeRow(${variantIndex}, ${attrIndex})">X</button>
-            </div>
-        </div>`;
-    }
-
-    // ===== Add Variant =====
-    function addVariant() {
-        const variantHTML = `
-        <div class="variant-block border p-3 mb-3 position-relative" data-variant-index="${variantIndex}">
-            <button type="button" class="btn-close position-absolute top-0 end-0 me-2 mt-2" style="position: absolute; top: 0; right: 0; background: gray; 
-                    color: white; border-radius: 50%; width: 20px; height: 20px; 
-                    font-size: 12px; padding: 0; border: none; cursor: pointer;"
-                    onclick="removeVariant(this)">x</button>
-
-            <label class="form-label">Attributes</label>
-            <div class="variant-attributes" data-variant-index="${variantIndex}">
-                ${getAttributeRowHTML(variantIndex, 0)}
-            </div>
-            <button type="button" class="btn btn-sm btn-outline-secondary mt-2" 
-                    onclick="addAttributeRow(${variantIndex})">
-                Add Another Attribute
-            </button>
-
-            <hr>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Variant SKU</label>
-                    <input type="text" class="form-control variant-sku" 
-                        name="variants[${variantIndex}][sku]" readonly required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Price</label>
-                    <input type="text" name="variants[${variantIndex}][price]" class="form-control" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Stock</label>
-                    <input type="number" name="variants[${variantIndex}][stock]" class="form-control" required>
-                </div>
-                <div class="col-md-12 mb-3">
-                    <label class="form-label">Variant Images (Max 5)</label>
-                    <input id="variantImagesInput${variantIndex}" type="file" accept="image/*" multiple
-                        name="variants[${variantIndex}][images][]"
-                        onchange="previewVariantImages(event, ${variantIndex})">
-                    <div id="variantImagePreviewContainer${variantIndex}" class="d-flex flex-wrap mt-2"></div>
-                </div>
-            </div>
-        </div>`;
-        $('#variant-container').append(variantHTML);
-        variantIndex++;
-    }
-
-    // ===== Add Attribute Row =====
-    function addAttributeRow(variantIndex) {
-        const container = $(`.variant-attributes[data-variant-index="${variantIndex}"]`);
-        const attrIndex = container.find('.attribute-row').length;
-        container.append(getAttributeRowHTML(variantIndex, attrIndex));
-        refreshAttributeDropdowns(variantIndex);
-    }
-
-    // ===== Remove Attribute Row =====
-    function removeAttributeRow(variantIndex, attrIndex) {
-        $(`.variant-attributes[data-variant-index="${variantIndex}"] .attribute-row[data-attr-index="${attrIndex}"]`)
-            .remove();
-        refreshAttributeDropdowns(variantIndex);
-        updateVariantSKU($(`.variant-block[data-variant-index="${variantIndex}"]`));
-    }
-
-    // ===== On Attribute Change =====
-    $(document).on('change', '.attribute-select', function() {
-        const variantIndex = $(this).data('variant');
-        const attrIndex = $(this).data('attr');
-        const attributeId = $(this).val();
-        const valueSelect = $(
-            `.variant-attributes[data-variant-index="${variantIndex}"] .attribute-row[data-attr-index="${attrIndex}"] .value-select`
-            );
-
-        refreshAttributeDropdowns(variantIndex);
-
-        if (!attributeId) {
-            valueSelect.html('<option value="">Select Value</option>').prop('disabled', true);
-            return;
+        `;
+            variantCard.querySelector('.variant-attributes').insertAdjacentHTML('beforeend', attrHTML);
         }
 
-        $.get(`/admin/attribute-values/${attributeId}`, function(data) {
-            let options = '<option value="">Select Value</option>';
-            data.forEach(function(value) {
-                options += `<option value="${value.id}">${value.value}</option>`;
-            });
-            valueSelect.html(options).prop('disabled', false);
-        });
-    });
-
-    // ===== On Value Change, Update SKU =====
-    $(document).on('change', '.value-select', function() {
-        const variantBlock = $(this).closest('.variant-block');
-        updateVariantSKU(variantBlock);
-    });
-
-    // ===== On Product Name Change, Update SKUs =====
-    $('#product').on('input', function() {
-        if ($('#type').val() === 'normal-product') {
-            const slug = $(this).val().trim().toLowerCase().replace(/\s+/g, '-');
-            $('.sku').val(slug);
+        if (e.target.classList.contains('removeAttrBtn')) {
+            let variantCard = e.target.closest('.card');
+            e.target.closest('.attr-row').remove();
+            refreshAttributeOptions(variantCard);
+            updateAllVariantSkus();
         }
-        $('.variant-block').each(function() {
-            updateVariantSKU($(this));
-        });
+
+        if (e.target.classList.contains('remove-variant')) {
+            e.target.closest('.card').remove();
+            updateVariantTitles();
+        }
     });
 
-    // ===== Update Variant SKU =====
-    function updateVariantSKU(variantBlock) {
-        let slug = $('#product').val().trim().toLowerCase().replace(/\s+/g, '-');
-        let parts = [];
-        variantBlock.find('.value-select option:selected').each(function() {
-            const txt = $(this).text().trim();
-            if (txt) {
-                parts.push(txt.toLowerCase().replace(/\s+/g, '-'));
+
+    function refreshAttributeOptions(variantCard) {
+        let selectedIds = [...variantCard.querySelectorAll('.attr-select')]
+            .map(s => s.value).filter(v => v);
+
+        variantCard.querySelectorAll('.attr-select').forEach(select => {
+            let currentValue = select.value;
+            select.innerHTML = `<option value="">Select Attribute</option>` +
+                attributes
+                .filter(a => !selectedIds.includes(a.id.toString()) || a.id.toString() === currentValue)
+                .map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+            select.value = currentValue;
+        });
+    }
+
+    // Load Attribute Values when Attribute changes
+    document.getElementById('variantsContainer').addEventListener('change', function(e) {
+        if (e.target.classList.contains('attr-select')) {
+            let attrId = e.target.value;
+            let values = attributes.find(a => a.id == attrId)?.attribute_values || [];
+            let valueSelect = e.target.closest('.attr-row').querySelector('.value-select');
+            valueSelect.innerHTML = `<option value="">Select Value</option>` +
+                values.map(v => `<option value="${v.value}">${v.value}</option>`).join('');
+        }
+
+        if (e.target.classList.contains('attr-select') || e.target.classList.contains('value-select')) {
+            let variantCard = e.target.closest('.card');
+            let productName = document.getElementById('productName').value;
+            let values = [...variantCard.querySelectorAll('.value-select')]
+                .map(s => s.value).filter(v => v);
+
+            // Check duplicate variant
+            if (isDuplicateVariant(variantCard, values)) {
+                alert('This variant combination already exists!');
+                e.target.value = '';
+                let skuField = variantCard.querySelector('.variant-sku');
+                skuField.value = '';
+                return;
+            }
+
+            variantCard.querySelector('.variant-sku').value = generateSku(productName, values);
+        }
+    });
+
+    function isDuplicateVariant(currentCard, values) {
+        if (!values.length) return false;
+
+        let isDuplicate = false;
+        document.querySelectorAll('.variant-card').forEach(card => {
+            if (card === currentCard) return;
+            let cardValues = [...card.querySelectorAll('.value-select')]
+                .map(s => s.value)
+                .filter(v => v);
+            if (cardValues.length && arrayEquals(cardValues, values)) {
+                isDuplicate = true;
             }
         });
-        variantBlock.find('.variant-sku').val(slug + (parts.length ? '-' + parts.join('-') : ''));
+        return isDuplicate;
     }
 
-    // ===== Remove Variant =====
-    function removeVariant(button) {
-        const index = $(button).closest('.variant-block').data('variant-index');
-        delete variantImages[index];
-        $(button).closest('.variant-block').remove();
+    function arrayEquals(a, b) {
+        if (a.length !== b.length) return false;
+        for (let i = 0; i < a.length; i++) {
+            if (a[i] !== b[i]) return false;
+        }
+        return true;
     }
 
-    // ===== Sync Files Before Submit =====
-    $('form').on('submit', function() {
-        let dtProduct = new DataTransfer();
-        productImages.forEach(file => dtProduct.items.add(file));
-        document.getElementById('productImagesInput').files = dtProduct.files;
+    // Update SKU when product name changes
+    document.getElementById('productName').addEventListener('input', function() {
+        let productType = document.getElementById('productType').value;
 
-        for (const [index, files] of Object.entries(variantImages)) {
-            let dtVariant = new DataTransfer();
-            files.forEach(file => dtVariant.items.add(file));
-            const input = document.getElementById(`variantImagesInput${index}`);
-            if (input) input.files = dtVariant.files;
+        if (productType === 'simple') {
+            document.getElementById('skuField').value = generateSku(this.value);
+        } else {
+            document.querySelectorAll('.variant-card').forEach(card => {
+                let skuField = card.querySelector('.variant-sku');
+                if (skuField) {
+                    let values = [...card.querySelectorAll('.value-select')]
+                        .map(s => s.value)
+                        .filter(v => v);
+                    skuField.value = generateSku(this.value, values);
+                }
+            });
         }
     });
 
-    // ===== PRODUCT IMAGE PREVIEW =====
-    function previewProductImages(event) {
-        const newFiles = Array.from(event.target.files);
-        if (productImages.length + newFiles.length > 5) {
-            alert("You can upload a maximum of 5 images.");
-            event.target.value = "";
-            return;
-        }
-        productImages.push(...newFiles);
-        event.target.value = "";
-        renderProductImagePreview();
-    }
+    // Image preview (Product)
+    const productInput = document.getElementById('productImages');
+    const preview = document.getElementById('productImagePreview');
+    const dt = new DataTransfer();
 
-    function renderProductImagePreview() {
-        const previewContainer = $('#productImagePreviewContainer');
-        previewContainer.empty();
-        productImages.forEach((file, index) => {
+    productInput.addEventListener('change', function() {
+        let newFiles = [...this.files];
+
+        // Limit total files to 5
+        if (dt.files.length + newFiles.length > 5) {
+            alert('You can only upload up to 5 product images.');
+            newFiles = newFiles.slice(0, 5 - dt.files.length);
+        }
+
+        newFiles.forEach(file => {
+            dt.items.add(file);
+
             const reader = new FileReader();
             reader.onload = e => {
-                previewContainer.append(`
-                    <div class="position-relative m-1">
-                        <img src="${e.target.result}" class="img-thumbnail" 
-                            style="width: 100px; height: 100px; object-fit: cover;">
-                        <button type="button" 
-                                style="position: absolute; top: 0; right: 0; background: white; 
-                                    color: black; border-radius: 50%; width: 20px; height: 20px; 
-                                    font-size: 12px; padding: 0; border: none; cursor: pointer;"
-                                onclick="removeProductImage(${index})">x</button>
-                    </div>
-                `);
+                const wrapper = document.createElement('div');
+                wrapper.classList.add('position-relative', 'image-wrapper');
+                wrapper.style.width = '80px';
+                wrapper.style.marginRight = '10px';
+                wrapper.style.display = 'inline-block';
+
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.classList.add('rounded', 'border', 'img-thumbnail');
+                img.style.width = '80px';
+
+                // Primary button
+                const primaryBtn = document.createElement('button');
+                primaryBtn.type = 'button';
+                primaryBtn.textContent = 'Primary';
+                primaryBtn.classList.add('btn', 'btn-primary', 'btn-sm', 'position-absolute');
+                primaryBtn.style.bottom = '5px';
+                primaryBtn.style.left = '5px';
+                primaryBtn.addEventListener('click', function() {
+                    preview.querySelectorAll('.image-wrapper').forEach(el => {
+                        el.classList.remove('primary');
+                        el.style.border = '';
+                    });
+                    wrapper.classList.add('primary');
+                    wrapper.style.border = '2px solid red';
+
+                    let hidden = document.getElementById('primaryProductImage');
+                    if (!hidden) {
+                        hidden = document.createElement('input');
+                        hidden.type = 'hidden';
+                        hidden.id = 'primaryProductImage';
+                        hidden.name = 'primary_product_image';
+                        document.querySelector('form').appendChild(hidden);
+                    }
+                    hidden.value = Array.from(preview.children).indexOf(wrapper);
+                });
+
+                // Remove button
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.textContent = 'X';
+                removeBtn.classList.add('btn', 'btn-danger', 'btn-sm', 'position-absolute');
+                removeBtn.style.top = '5px';
+                removeBtn.style.right = '5px';
+                removeBtn.addEventListener('click', function() {
+                    const index = Array.from(preview.children).indexOf(wrapper);
+                    wrapper.remove();
+                    dt.items.remove(index); // remove file from DataTransfer
+                    productInput.files = dt.files;
+
+                    // Clear primary if removed
+                    if (wrapper.classList.contains('primary')) {
+                        const hidden = document.getElementById('primaryProductImage');
+                        if (hidden) hidden.value = '';
+                    }
+                });
+
+                wrapper.appendChild(img);
+                wrapper.appendChild(primaryBtn);
+                wrapper.appendChild(removeBtn);
+                preview.appendChild(wrapper);
             };
             reader.readAsDataURL(file);
         });
-    }
 
-    function removeProductImage(index) {
-        productImages.splice(index, 1);
-        renderProductImagePreview();
-    }
+        // Update input files
+        productInput.files = dt.files;
+    });
 
-    // ===== VARIANT IMAGE PREVIEW =====
-    function previewVariantImages(event, index) {
-        if (!variantImages[index]) variantImages[index] = [];
-        const newFiles = Array.from(event.target.files);
-        if (variantImages[index].length + newFiles.length > 5) {
-            alert("You can upload a maximum of 5 images for this variant.");
-            event.target.value = "";
-            return;
+
+
+    // Remove product image from preview
+    document.getElementById('productImagePreview').addEventListener('click', function(e) {
+        if (e.target.classList.contains('removeProductImgBtn')) {
+            e.target.closest('div').remove();
         }
-        variantImages[index].push(...newFiles);
-        event.target.value = "";
-        renderVariantImagePreview(index);
-    }
+    });
 
-    function renderVariantImagePreview(index) {
-        const previewContainer = $(`#variantImagePreviewContainer${index}`);
-        previewContainer.empty();
-        variantImages[index].forEach((file, fileIndex) => {
+    // Image preview (Variant)
+    document.getElementById('variantsContainer').addEventListener('change', function(e) {
+        if (!e.target.classList.contains('variant-images')) return;
+
+        const input = e.target;
+        const card = input.closest('.card');
+        const preview = card.querySelector('.variant-image-preview');
+
+        if (!card.dt) card.dt = new DataTransfer(); // store files per variant
+
+        let newFiles = [...input.files];
+
+        // Limit total files to 5
+        if (card.dt.files.length + newFiles.length > 5) {
+            alert('You can only upload up to 5 images per variant.');
+            newFiles = newFiles.slice(0, 5 - card.dt.files.length);
+        }
+
+        newFiles.forEach(file => {
+            card.dt.items.add(file);
+
             const reader = new FileReader();
-            reader.onload = e => {
-                previewContainer.append(`
-                    <div class="position-relative m-1">
-                        <img src="${e.target.result}" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
-                        <button type="button" style="position: absolute; top: 0; right: 0; background: white; 
-                                color: black; border-radius: 50%; width: 20px; height: 20px; 
-                                font-size: 12px; padding: 0; border: none; cursor: pointer;" 
-                                onclick="removeVariantImage(${index}, ${fileIndex})">x</button>
-                    </div>
-                `);
+            reader.onload = ev => {
+                const wrapper = document.createElement('div');
+                wrapper.classList.add('position-relative', 'image-wrapper');
+                wrapper.style.width = '80px';
+
+                const img = document.createElement('img');
+                img.src = ev.target.result;
+                img.classList.add('rounded', 'border', 'img-thumbnail');
+                img.style.width = '80px';
+
+                // Primary button
+                const primaryBtn = document.createElement('button');
+                primaryBtn.type = 'button';
+                primaryBtn.textContent = 'Primary';
+                primaryBtn.classList.add('btn', 'btn-primary', 'btn-sm', 'position-absolute');
+                primaryBtn.style.bottom = '5px';
+                primaryBtn.style.left = '5px';
+                primaryBtn.addEventListener('click', () => {
+                    preview.querySelectorAll('.image-wrapper').forEach(el => {
+                        el.classList.remove('primary');
+                        el.style.border = '';
+                    });
+                    wrapper.classList.add('primary');
+                    wrapper.style.border = '2px solid red';
+
+                    let hidden = card.querySelector('.primaryVariantImage');
+                    if (!hidden) {
+                        hidden = document.createElement('input');
+                        hidden.type = 'hidden';
+                        hidden.name =
+                            `variants[${card.dataset.variantIndex}][primary_image]`;
+                        hidden.classList.add('primaryVariantImage');
+                        card.appendChild(hidden);
+                    }
+                    hidden.value = Array.from(preview.children).indexOf(wrapper);
+                });
+
+                // Remove button
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.textContent = 'X';
+                removeBtn.classList.add('btn', 'btn-danger', 'btn-sm', 'position-absolute');
+                removeBtn.style.top = '5px';
+                removeBtn.style.right = '5px';
+                removeBtn.addEventListener('click', () => {
+                    const index = Array.from(preview.children).indexOf(wrapper);
+                    wrapper.remove();
+                    card.dt.items.remove(index);
+                    input.files = card.dt.files;
+
+                    // Clear primary if removed
+                    if (wrapper.classList.contains('primary')) {
+                        const hidden = card.querySelector('.primaryVariantImage');
+                        if (hidden) hidden.value = '';
+                    }
+                });
+
+                wrapper.appendChild(img);
+                wrapper.appendChild(primaryBtn);
+                wrapper.appendChild(removeBtn);
+                preview.appendChild(wrapper);
+
+                // Update input files
+                input.files = card.dt.files;
             };
             reader.readAsDataURL(file);
         });
+    });
+
+    // Remove variant image from preview
+    document.getElementById('variantsContainer').addEventListener('click', function(e) {
+        if (e.target.classList.contains('removeVariantImgBtn')) {
+            e.target.closest('div').remove();
+        }
+    });
+
+    // Helper to update SKUs after removing attributes
+    function updateAllVariantSkus() {
+        document.querySelectorAll('.variant-card').forEach(card => {
+            let skuField = card.querySelector('.variant-sku');
+            if (skuField) {
+                let values = [...card.querySelectorAll('.value-select')]
+                    .map(s => s.value)
+                    .filter(v => v);
+                skuField.value = generateSku(document.getElementById('productName').value, values);
+            }
+        });
     }
 
-    function removeVariantImage(index, fileIndex) {
-        variantImages[index].splice(fileIndex, 1);
-        renderVariantImagePreview(index);
+    function updateVariantTitles() {
+        document.querySelectorAll('.variant-card').forEach((card, index) => {
+            card.querySelector('.variant-title').textContent = `Variant #${index + 1}`;
+        });
     }
 </script>

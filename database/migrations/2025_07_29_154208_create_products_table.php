@@ -17,7 +17,10 @@ return new class extends Migration
             $table->foreignId('brand_id')->constrained('brands')->cascadeOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->string('type')->nullable();
+            $table->string('sku')->nullable();
+            $table->boolean('has_variants')->default(false);
+            $table->decimal('price', 10, 2)->default(0)->nullable();
+            $table->integer('stock')->nullable();
             $table->timestamps();
         });
     }
