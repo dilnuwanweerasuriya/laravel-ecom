@@ -85,7 +85,7 @@ Route::group([
 
     Route::get('/admin/products/edit/{id}', 'ViewController@productEdit');
 
-    Route::post('/admin/updateProduct', 'ActionController@productUpdate');
+    Route::post('/admin/updateProduct/{id}', 'ActionController@productUpdate');
 
     Route::post('/admin/products/delete/{id}', 'ActionController@productDelete');
 

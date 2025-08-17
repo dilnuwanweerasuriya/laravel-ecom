@@ -509,8 +509,193 @@ class ActionController extends Controller
     }
 
     //Product Update
-    public function productUpdate(Request $request){
-        dd($request);
+    public function productUpdate(Request $request, $id){
+        // dd($request);
+        try {
+            // Find the product or fail
+            $product = Product::findOrFail($id);
+
+            // Base validation rules
+            $rules = [
+                'name' => 'required|max:255',
+                'description' => 'required',
+                'category_id' => 'required|exists:categories,id',
+                'brand_id' => 'required|exists:brands,id',
+                'product_type' => 'required|in:variant,simple',
+                'images' => 'nullable|array|max:5',
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ];
+
+            // Add type-specific validation rules
+            if ($request->input('product_type') === 'variant') {
+                $rules = array_merge($rules, [
+                    'variants' => 'required|array|min:1',
+                    'variants.*.attributes' => 'required|array',
+                    'variants.*.values' => 'required|array',
+                    'variants.*.sku' => 'required|string|max:255',
+                    'variants.*.price' => 'required|numeric|min:0',
+                    'variants.*.stock' => 'required|integer|min:0',
+                    'variants.*.images' => 'nullable|array|max:5',
+                    'variants.*.images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+                ]);
+            } else {
+                $rules = array_merge($rules, [
+                    'sku' => 'required|string|max:255',
+                    'price' => 'required|numeric|min:0',
+                    'stock' => 'required|integer|min:0',
+                ]);
+            }
+
+            $validated = $request->validate($rules);
+
+            DB::beginTransaction();
+
+            $saveImage = function ($imageFile) {
+                $imageName = time() . '_' . uniqid() . '.' . $imageFile->getClientOriginalExtension();
+                $imageFile->move(public_path('storage/uploads/products'), $imageName);
+                return 'storage/uploads/products/' . $imageName;
+            };
+
+            // Update product basic info
+            $product->update([
+                'name' => $request->name,
+                'description' => $request->description,
+                'has_variants' => $request->product_type == 'simple' ? 0 : 1,
+                'category_id' => $request->category_id,
+                'brand_id' => $request->brand_id,
+                'sku' => $request->product_type == 'simple' ? $request->sku : null,
+                'price' => $request->product_type == 'simple' ? $request->price : null,
+                'stock' => $request->product_type == 'simple' ? $request->stock : null,
+            ]);
+
+            // Handle existing product images
+            $keepImages = $request->input('keep_images', []);
+            $product->images()->whereNotIn('id', $keepImages)->delete();
+
+            // Handle product images
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $key => $imageFile) {
+                    $imagePath = $saveImage($imageFile);
+
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'image_url' => $imagePath,
+                        'is_primary' => ($request->primary_product_image == $key) ? 1 : 0,
+                    ]);
+                }
+            }
+
+            // If product type is variant
+            if ($request->input('product_type') === 'variant') {
+                foreach ($request->variants as $index => $variantData) {
+                    
+                    // If variant has an ID (editing existing), update it; otherwise create a new one
+                    $variant = isset($variantData['variant_id'])
+                        ? ProductVariant::find($variantData['variant_id'])
+                        : new ProductVariant();
+
+                    $variant->product_id = $product->id;
+                    $variant->sku = $variantData['sku'];
+                    $variant->price = $variantData['price'];
+                    $variant->stock = $variantData['stock'];
+                    $variant->save();
+
+                    // Handle existing images to keep
+                    $keepImages = $variantData['keep_images'] ?? [];
+
+                    // Delete images not in keep list
+                    $variantImages = VariantImage::where('variant_id', $variant->id)
+                        ->whereNotIn('id', $keepImages)
+                        ->get();
+
+                    foreach ($variantImages as $vImage) {
+                        $filePath = public_path('storage/uploads/products/' . basename($vImage->image_url));
+                        
+                        if (file_exists($filePath)) {
+                            @unlink($filePath);
+                        }
+
+                        $vImage->delete();
+                    }
+
+                    // Reset all primary flags (will set again later)
+                    VariantImage::where('variant_id', $variant->id)->update(['is_primary' => 0]);
+
+                    // Handle new images upload
+                    if ($request->hasFile("variants.$index.images")) {
+                        foreach ($request->file("variants.$index.images") as $key => $variantImageFile) {
+                            $variantImagePath = $saveImage($variantImageFile);
+
+                            VariantImage::create([
+                                'variant_id' => $variant->id,
+                                'image_url' => $variantImagePath,
+                                'is_primary' => 0, // will update later
+                            ]);
+                        }
+                    }
+
+                    // Set primary image
+                    if (!empty($variantData['primary_existing_image'])) {
+                        // Primary image is from existing images
+                        VariantImage::where('id', $variantData['primary_existing_image'])
+                            ->where('variant_id', $variant->id)
+                            ->update(['is_primary' => 1]);
+                    } elseif (!empty($variantData['primary_product_image'])) {
+                        // Primary image is from newly uploaded images
+                        $primaryIndex = (int)$variantData['primary_product_image'];
+                        $newImages = VariantImage::where('variant_id', $variant->id)
+                            ->orderBy('id', 'desc') // newest images last created
+                            ->get();
+
+                        if (isset($newImages[$primaryIndex])) {
+                            $newImages[$primaryIndex]->update(['is_primary' => 1]);
+                        }
+                    } else {
+                        // Default: set first image as primary if none set
+                        VariantImage::where('variant_id', $variant->id)
+                            ->first()?->update(['is_primary' => 1]);
+                    }
+
+                    // Handle attributes
+                    $variant->attributes()->delete(); // clear old attributes
+                    foreach ($variantData['attributes'] as $attrIndex => $attrId) {
+                        $attribute = Attribute::find($attrId);
+                        if ($attribute) {
+                            $variant->attributes()->create([
+                                'attribute_name' => $attribute->name,
+                                'attribute_value' => $variantData['values'][$attrIndex],
+                            ]);
+                        }
+                    }
+                }
+            } else {
+                // If changed from variant to simple, delete old variants and related data
+                $product->variants()->each(function ($variant) {
+                    foreach ($variant->images as $image) {
+                        $filePath = public_path('storage/uploads/products/' . basename($image->image_url));
+                        
+                        if (file_exists($filePath)) {
+                            @unlink($filePath);
+                        }
+
+                        $image->delete();
+                    }
+                    $variant->attributes()->delete();
+                    $variant->delete();
+                });
+            }
+
+            DB::commit();
+
+            toastr()->success('Product updated successfully.');
+            return redirect('/admin/products');
+
+        } catch (\Throwable $e) {
+            DB::rollback();
+            dd($e);
+            toastr()->error('Product update failed. Please try again.');
+            return redirect()->back();
+        }
     }
 
     //Product Delete (AJAX)
@@ -519,17 +704,29 @@ class ActionController extends Controller
             DB::beginTransaction();
 
             $product = Product::findOrFail($id);
-            $productVariantIds = ProductVariant::where('product_id', $product->id)->pluck('id');
 
-            if ($product->type === 'variant-product') {
+            if($product->has_variants === 1){
+                $productVariantIds = ProductVariant::where('product_id', $product->id)->pluck('id');
+
+                $variantImages = VariantImage::whereIn('variant_id', $productVariantIds)
+                        ->get();
+
+                foreach ($variantImages as $vImage) {
+                    $filePath = public_path('storage/uploads/products/' . basename($vImage->image_url));
+                    
+                    if (file_exists($filePath)) {
+                        @unlink($filePath);
+                    }
+
+                    $vImage->delete();
+                }
                 ProductVariantAttributes::whereIn('variant_id', $productVariantIds)->delete();
+                ProductVariant::where('product_id', $product->id)->delete();
             }
-
-            ProductVariant::where('product_id', $product->id)->delete();
 
             $images = ProductImage::where('product_id', $product->id)->get();
             foreach ($images as $image) {
-                $filePath = public_path('storage/uploads/products/' . basename($image->image_path));
+                $filePath = public_path('storage/uploads/products/' . basename($image->image_url));
                 
                 if (file_exists($filePath)) {
                     @unlink($filePath);

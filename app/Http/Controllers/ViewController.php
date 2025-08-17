@@ -188,9 +188,8 @@ class ViewController extends DataController
             'attributes' => $this->getAttributes(),
             'categories' => $this->getCategories(),
             'brands' => $this->getBrands(),
-            'selected_attributes' => $this->getSelectedAttributes($id)['attributes'],
-            'selected_attribute_values' => $this->getSelectedAttributes($id)['attribValues'],
         );
+        // dd($data);
 
         return $this->default($data);
     }

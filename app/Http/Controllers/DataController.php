@@ -70,21 +70,7 @@ class DataController extends Controller
 
     //Get Product Data
     public function getProductData($id){
-        $product = Product::with('images','variants.images','variants.attribValues')->where('id', $id)->first();
+        $product = Product::with('images','variants.images','variants.attributes')->where('id', $id)->first();
         return $product;
-    }
-
-    //Get Selected Attributes For Product
-    public function getSelectedAttributes($id){
-        $variant = ProductVariant::where('product_id', $id)->pluck('id');
-        $attribValues = ProductVariantAttributes::whereIn('variant_id', $variant)->pluck('attribute_value_id');
-        $attributes = AttributeValue::whereIn('id', $attribValues)->pluck('attribute_id');
-
-        $data = [
-            'attributes' => $attributes,
-            'attribValues' => $attribValues
-        ];
-
-        return $data;
     }
 }
