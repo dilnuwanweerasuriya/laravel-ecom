@@ -18,9 +18,13 @@
                     <table class="table align-items-center mb-0">
                         <thead>
                             <tr>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Category</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Slug</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Category
+                                </th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                    Slug</th>
+                                <th
+                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    Status</th>
                                 <th class="text-secondary opacity-7"></th>
                             </tr>
                         </thead>
@@ -40,7 +44,8 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <p class="text-xs font-weight-bold mb-0 text-capitalize">{{ $category->slug }}</p>
+                                        <p class="text-xs font-weight-bold mb-0 text-capitalize">{{ $category->slug }}
+                                        </p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
                                         @if ($category->is_active == 1)
@@ -76,27 +81,54 @@
                                 <div class="modal fade" id="categoryModal{{ $category->id }}" tabindex="-1"
                                     aria-labelledby="categoryModalLabel{{ $category->id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="categoryModalLabel{{ $category->id }}">
-                                                    Category Details</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
+                                        <div class="modal-content shadow-lg rounded-3 border-0">
+
+                                            <!-- Modal Header -->
+                                            <div class="modal-header bg-gradient-info text-white">
+                                                <h5 class="modal-title d-flex align-items-center"
+                                                    id="categoryModalLabel{{ $category->id }}">
+                                                    <i class="material-symbols-rounded me-2">category</i>
+                                                    Category Details
+                                                </h5>
+                                                <button type="button" class="btn-close btn-close-white"
+                                                    data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
+
+                                            <!-- Modal Body -->
                                             <div class="modal-body">
-                                                <p><strong>Name:</strong> {{ $category->name }}</p>
-                                                <p><strong>Slug:</strong> {{ $category->slug }}</p>
-                                                <p><strong>Status:</strong>
+                                                <!-- Category Name -->
+                                                <div class="mb-3">
+                                                    <h6 class="text-info fw-bold mb-1"><i
+                                                            class="material-symbols-rounded me-1">label</i> Name</h6>
+                                                    <p class="fs-6 text-dark">{{ $category->name }}</p>
+                                                </div>
+
+                                                <!-- Slug -->
+                                                <div class="mb-3">
+                                                    <h6 class="text-info fw-bold mb-1"><i
+                                                            class="material-symbols-rounded me-1">link</i> Slug</h6>
+                                                    <p class="text-muted">{{ $category->slug }}</p>
+                                                </div>
+
+                                                <!-- Status -->
+                                                <div>
+                                                    <h6 class="text-info fw-bold mb-1"><i
+                                                            class="material-symbols-rounded me-1">info</i> Status</h6>
                                                     @if ($category->is_active == 1)
-                                                        <span class="badge badge-sm bg-gradient-success">Active</span>
+                                                        <span class="badge bg-success px-3 py-2">Active</span>
                                                     @else
-                                                        <span class="badge badge-sm bg-gradient-warning">Inactive</span>
+                                                        <span
+                                                            class="badge bg-warning text-dark px-3 py-2">Inactive</span>
                                                     @endif
-                                                </p>
+                                                </div>
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-sm bg-gradient-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
+
+                                            <!-- Modal Footer -->
+                                            <div class="modal-footer bg-light">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    data-bs-dismiss="modal">
+                                                    <i class="material-symbols-rounded me-1">close</i> Close
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

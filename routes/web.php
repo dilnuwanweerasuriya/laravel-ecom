@@ -89,4 +89,9 @@ Route::group([
 
     Route::post('/admin/products/delete/{id}', 'ActionController@productDelete');
 
+    //stock
+    Route::get('/admin/stocks', 'ViewController@stocks');
+
+    Route::post('/admin/stock/update', 'ActionController@stockUpdate');
+
 });

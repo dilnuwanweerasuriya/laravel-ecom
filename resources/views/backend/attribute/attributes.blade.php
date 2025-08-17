@@ -38,7 +38,9 @@
                                     <td class="text-center">
                                         @if ($attribute->attributeValues->isNotEmpty())
                                             @foreach ($attribute->attributeValues as $item)
-                                                {{ $item->value }}@if (!$loop->last), @endif
+                                                {{ $item->value }}@if (!$loop->last)
+                                                    ,
+                                                @endif
                                             @endforeach
                                         @else
                                             -
@@ -71,27 +73,49 @@
                                 <div class="modal fade" id="attributeModal{{ $attribute->id }}" tabindex="-1"
                                     aria-labelledby="attributeModalLabel{{ $attribute->id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="attributeModalLabel{{ $attribute->id }}">
-                                                    Attribute Details</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
+                                        <div class="modal-content shadow-lg rounded-3 border-0">
+                                            <!-- Header -->
+                                            <div class="modal-header bg-gradient-primary text-white">
+                                                <h5 class="modal-title d-flex align-items-center"
+                                                    id="attributeModalLabel{{ $attribute->id }}">
+                                                    <i class="material-symbols-rounded me-2">tune</i>
+                                                    Attribute Details
+                                                </h5>
+                                                <button type="button" class="btn-close btn-close-white"
+                                                    data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
+
+                                            <!-- Body -->
                                             <div class="modal-body">
-                                                <p><strong>Name:</strong> {{ $attribute->name }}</p>
+                                                <!-- Attribute Name -->
+                                                <div class="mb-3">
+                                                    <h6 class="text-primary fw-bold mb-2"><i
+                                                            class="material-symbols-rounded me-1">label</i> Attribute
+                                                        Name</h6>
+                                                    <p class="fs-6 text-dark">{{ $attribute->name }}</p>
+                                                </div>
+
+                                                <!-- Attribute Values -->
                                                 @if ($attribute->attributeValues->isNotEmpty())
                                                     <hr>
-                                                    <p><strong>Attribute Values:</strong>
+                                                    <h6 class="text-primary fw-bold mb-2"><i
+                                                            class="material-symbols-rounded me-1">list</i> Attribute
+                                                        Values</h6>
+                                                    <div class="d-flex flex-wrap gap-2">
                                                         @foreach ($attribute->attributeValues as $item)
-                                                            {{ $item->value }}@if (!$loop->last), @endif
+                                                            <span
+                                                                class="badge bg-light text-dark border">{{ $item->value }}</span>
                                                         @endforeach
-                                                    </p>
+                                                    </div>
                                                 @endif
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-sm bg-gradient-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
+
+                                            <!-- Footer -->
+                                            <div class="modal-footer bg-light">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    data-bs-dismiss="modal">
+                                                    <i class="material-symbols-rounded me-1">close</i> Close
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

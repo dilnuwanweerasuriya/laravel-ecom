@@ -745,4 +745,23 @@ class ActionController extends Controller
             return response()->json(['error' => 'Failed to delete product.'], 500);
         }
     }
+
+    //Stock Update Function
+    public function stockUpdate(Request $request){
+        $stocks = $request->input('stock', []);
+
+        foreach ($stocks as $item) {
+            if (!empty($item['variant_id'])) {
+                $variant = ProductVariant::where('id', $item['variant_id'])->first();
+                $variant->stock += $item['new_stock'];
+                $variant->save();
+            } else {
+                $product = Product::where('id', $item['product_id'])->first();
+                $product->stock += $item['new_stock'];
+                $product->save();
+            }
+        }
+
+        return response()->json(['success' => true]);
+    }
 }

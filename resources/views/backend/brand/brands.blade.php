@@ -83,33 +83,63 @@
                                 <div class="modal fade" id="brandModal{{ $brand->id }}" tabindex="-1"
                                     aria-labelledby="brandModalLabel{{ $brand->id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="brandModalLabel{{ $brand->id }}">Brand
-                                                    Details</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
+                                        <div class="modal-content shadow-lg rounded-3 border-0">
+
+                                            <!-- Header -->
+                                            <div class="modal-header bg-gradient-primary text-white">
+                                                <h5 class="modal-title d-flex align-items-center"
+                                                    id="brandModalLabel{{ $brand->id }}">
+                                                    <i class="material-symbols-rounded me-2">branding_watermark</i>
+                                                    Brand Details
+                                                </h5>
+                                                <button type="button" class="btn-close btn-close-white"
+                                                    data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
+
+                                            <!-- Body -->
                                             <div class="modal-body">
-                                                <p><strong>Name:</strong> {{ $brand->name }}</p>
-                                                <p><strong>Slug:</strong> {{ $brand->slug }}</p>
-                                                <p><strong>Image:</strong>
-                                                    @if ($brand->image)
+                                                <!-- Brand Image -->
+                                                @if ($brand->image)
+                                                    <div class="text-center mb-3">
                                                         <img src="{{ asset($brand->image) }}" alt="Brand Image"
-                                                            style="height: 40px;">
-                                                    @endif
-                                                </p>
-                                                <p><strong>Status:</strong>
+                                                            class="img-fluid rounded shadow-sm"
+                                                            style="max-height: 100px;">
+                                                    </div>
+                                                @endif
+
+                                                <!-- Brand Info -->
+                                                <div class="mb-3">
+                                                    <h6 class="text-primary fw-bold mb-2"><i
+                                                            class="material-symbols-rounded me-1">label</i> Brand Name
+                                                    </h6>
+                                                    <p class="fs-6 text-dark">{{ $brand->name }}</p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <h6 class="text-primary fw-bold mb-2"><i
+                                                            class="material-symbols-rounded me-1">link</i> Slug</h6>
+                                                    <p class="text-muted">{{ $brand->slug }}</p>
+                                                </div>
+
+                                                <!-- Status -->
+                                                <div>
+                                                    <h6 class="text-primary fw-bold mb-2"><i
+                                                            class="material-symbols-rounded me-1">info</i> Status</h6>
                                                     @if ($brand->is_active == 1)
-                                                        <span class="badge badge-sm bg-gradient-success">Active</span>
+                                                        <span class="badge bg-success px-3 py-2">Active</span>
                                                     @else
-                                                        <span class="badge badge-sm bg-gradient-warning">Inactive</span>
+                                                        <span
+                                                            class="badge bg-warning text-dark px-3 py-2">Inactive</span>
                                                     @endif
-                                                </p>
+                                                </div>
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-sm bg-gradient-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
+
+                                            <!-- Footer -->
+                                            <div class="modal-footer bg-light">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    data-bs-dismiss="modal">
+                                                    <i class="material-symbols-rounded me-1">close</i> Close
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

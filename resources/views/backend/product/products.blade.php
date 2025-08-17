@@ -85,67 +85,102 @@
                                 <div class="modal fade" id="productModal{{ $product->id }}" tabindex="-1"
                                     aria-labelledby="productModalLabel{{ $product->id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-lg modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="productModalLabel{{ $product->id }}">
-                                                    Product Details</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
+                                        <div class="modal-content shadow-lg rounded-3 border-0">
+                                            <!-- Header -->
+                                            <div class="modal-header bg-gradient-dark text-white">
+                                                <h5 class="modal-title d-flex align-items-center"
+                                                    id="productModalLabel{{ $product->id }}">
+                                                    <i class="material-symbols-rounded me-2">inventory_2</i>
+                                                    Product Details
+                                                </h5>
+                                                <button type="button" class="btn-close btn-close-white"
+                                                    data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
+
+                                            <!-- Body -->
                                             <div class="modal-body">
-                                                <p><strong>Product:</strong> {{ $product->name }}</p>
-                                                <p><strong>Description:</strong> {{ $product->description }}</p>
-                                                <p><strong>Type:</strong>
-                                                    {{ $product->has_variants == 0 ? 'Simple Product' : 'Variant Product' }}
-                                                </p>
-                                                <p><strong>Image:</strong>
+                                                <!-- Product Info -->
+                                                <div class="mb-4">
+                                                    <h6 class="text-primary fw-bold mb-3"><i
+                                                            class="material-symbols-rounded me-1">info</i> General
+                                                        Information</h6>
+                                                    <p><strong>Name:</strong> {{ $product->name }}</p>
+                                                    <p><strong>Description:</strong> {{ $product->description }}</p>
+                                                    <p><strong>Type:</strong>
+                                                        {{ $product->has_variants == 0 ? 'Simple Product' : 'Variant Product' }}
+                                                    </p>
+
+                                                    <!-- Product Image -->
                                                     @if ($product->images)
                                                         @foreach ($product->images as $image)
                                                             @if ($image->is_primary == 1)
-                                                                <img src="{{ asset($image->image_url) }}"
-                                                                    alt="Product Image" style="height: 50px;">
+                                                                <div class="mb-3">
+                                                                    <img src="{{ asset($image->image_url) }}"
+                                                                        alt="Product Image"
+                                                                        class="img-fluid rounded shadow-sm"
+                                                                        style="max-height:150px;">
+                                                                </div>
                                                             @endif
                                                         @endforeach
                                                     @endif
-                                                </p>
+                                                </div>
 
+                                                <!-- Variants Section -->
                                                 @if ($product->has_variants == 1)
-                                                    <strong class="d-block mb-3">Variant Details</strong>
-
+                                                    <hr class="my-3">
+                                                    <h6 class="text-primary fw-bold mb-3"><i
+                                                            class="material-symbols-rounded me-1">category</i> Variant
+                                                        Details</h6>
                                                     <div class="row">
                                                         @foreach ($product->variants as $index => $variant)
                                                             <div class="col-md-6 mb-4">
-                                                                <div class="border rounded p-3 mb-3 bg-light">
-                                                                    <h6 class="mb-2">Variant {{ $index + 1 }}</h6>
-                                                                    <p><strong>Variant SKU:</strong>
-                                                                        {{ $variant->sku }}</p>
-                                                                    <p><strong>Image:</strong>
+                                                                <div class="card border-0 shadow-sm rounded-3 h-100">
+                                                                    <div class="card-body">
+                                                                        <h6 class="card-title text-dark fw-bold mb-3">
+                                                                            Variant {{ $index + 1 }}</h6>
                                                                         @foreach ($variant->images as $image)
                                                                             @if ($image->is_primary == 1)
                                                                                 <img src="{{ asset($image->image_url) }}"
-                                                                                    alt="Variant Image" style="height: 50px;">
+                                                                                    alt="Variant Image"
+                                                                                    class="img-fluid rounded mb-3"
+                                                                                    style="max-height:100px;">
                                                                             @endif
                                                                         @endforeach
-                                                                    </p>
-                                                                    <p><strong>Variant Price:</strong> LKR
-                                                                        {{ number_format($variant->price, 2) }}</p>
-                                                                    <p><strong>Variant Stock:</strong>
-                                                                        {{ $variant->stock }}
-                                                                    </p>
+                                                                        <p><strong>SKU:</strong> {{ $variant->sku }}
+                                                                        </p>
+                                                                        <p><strong>Price:</strong>
+                                                                            <span class="badge bg-success">LKR
+                                                                                {{ number_format($variant->price, 2) }}</span>
+                                                                        </p>
+                                                                        <p><strong>Stock:</strong>
+                                                                            <span
+                                                                                class="badge bg-info text-dark">{{ $variant->stock }}</span>
+                                                                        </p>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         @endforeach
                                                     </div>
                                                 @else
-                                                    <p><strong>SKU: </strong> {{ $product->sku }}</p>
-                                                    <p><strong>Price:</strong> LKR
-                                                        {{ number_format($product->price, 2) }}</p>
-                                                    <p><strong>Stock:</strong> {{ $product->stock }}</p>
+                                                    <hr class="my-3">
+                                                    <p><strong>SKU:</strong> {{ $product->sku }}</p>
+                                                    <p><strong>Price:</strong>
+                                                        <span class="badge bg-success">LKR
+                                                            {{ number_format($product->price, 2) }}</span>
+                                                    </p>
+                                                    <p><strong>Stock:</strong>
+                                                        <span
+                                                            class="badge bg-info text-dark">{{ $product->stock }}</span>
+                                                    </p>
                                                 @endif
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-sm bg-gradient-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
+
+                                            <!-- Footer -->
+                                            <div class="modal-footer bg-light">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    data-bs-dismiss="modal">
+                                                    <i class="material-symbols-rounded me-1">close</i> Close
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

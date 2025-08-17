@@ -4,6 +4,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <link rel="apple-touch-icon" sizes="76x76" href="/../assets/img/apple-icon.png">
     <link rel="icon" type="image/png" href="/../assets/img/favicon.png">
     <title>Material Dashboard</title>
@@ -92,6 +95,13 @@
                         href="/admin/products">
                         <i class="material-symbols-rounded opacity-5">inventory</i>
                         <span class="nav-link-text ms-1">Products</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('admin/stocks*') ? 'active bg-gradient-dark text-white' : 'text-dark' }}"
+                        href="/admin/stocks">
+                        <i class="material-symbols-rounded opacity-5">inventory_2</i>
+                        <span class="nav-link-text ms-1">Stocks</span>
                     </a>
                 </li>
                 <li class="nav-item">

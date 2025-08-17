@@ -193,4 +193,15 @@ class ViewController extends DataController
 
         return $this->default($data);
     }
+
+    //Stocks Function
+    public function stocks(){
+        $data = array(
+            'view' => 'backend/stock/stocks',
+            'title' => 'Stocks',
+            'products' => $this->getProducts(),
+        );
+
+        return $this->default($data);
+    }
 }

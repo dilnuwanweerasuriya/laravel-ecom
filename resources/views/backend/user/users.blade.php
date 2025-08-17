@@ -83,21 +83,66 @@
                                 <div class="modal fade" id="userModal{{ $user->id }}" tabindex="-1"
                                     aria-labelledby="userModalLabel{{ $user->id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="userModalLabel{{ $user->id }}">User Details</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <div class="modal-content shadow-lg rounded-3 border-0">
+
+                                            <!-- Modal Header -->
+                                            <div class="modal-header bg-gradient-primary text-white">
+                                                <h5 class="modal-title d-flex align-items-center"
+                                                    id="userModalLabel{{ $user->id }}">
+                                                    <i class="material-symbols-rounded me-2">person</i>
+                                                    User Details
+                                                </h5>
+                                                <button type="button" class="btn-close btn-close-white"
+                                                    data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
+
+                                            <!-- Modal Body -->
                                             <div class="modal-body">
-                                                <p><strong>Name:</strong> {{ $user->name }}</p>
-                                                <p><strong>Email:</strong> {{ $user->email }}</p>
-                                                <p><strong>Phone:</strong> {{ $user->phone }}</p>
-                                                <p><strong>Address:</strong> {{ $user->address }}</p>
-                                                <p><strong>Role:</strong> {{ ucfirst($user->role) }}</p>
+                                                <div class="mb-3">
+                                                    <h6 class="text-primary fw-bold mb-1"><i
+                                                            class="material-symbols-rounded me-1">badge</i> Name</h6>
+                                                    <p class="text-dark">{{ $user->name }}</p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <h6 class="text-primary fw-bold mb-1"><i
+                                                            class="material-symbols-rounded me-1">email</i> Email</h6>
+                                                    <p class="text-muted">{{ $user->email }}</p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <h6 class="text-primary fw-bold mb-1"><i
+                                                            class="material-symbols-rounded me-1">call</i> Phone</h6>
+                                                    <p class="text-muted">{{ $user->phone }}</p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <h6 class="text-primary fw-bold mb-1"><i
+                                                            class="material-symbols-rounded me-1">home</i> Address</h6>
+                                                    <p class="text-muted">{{ $user->address }}</p>
+                                                </div>
+
+                                                <div>
+                                                    <h6 class="text-primary fw-bold mb-1"><i
+                                                            class="material-symbols-rounded me-1">security</i> Role</h6>
+                                                    @php
+                                                        $roleClass = match ($user->role) {
+                                                            'admin' => 'bg-danger',
+                                                            'user' => 'bg-success',
+                                                            default => 'bg-secondary',
+                                                        };
+                                                    @endphp
+                                                    <span
+                                                        class="badge {{ $roleClass }} text-white px-3 py-2">{{ ucfirst($user->role) }}</span>
+                                                </div>
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-sm bg-gradient-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
+
+                                            <!-- Modal Footer -->
+                                            <div class="modal-footer bg-light">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    data-bs-dismiss="modal">
+                                                    <i class="material-symbols-rounded me-1">close</i> Close
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
