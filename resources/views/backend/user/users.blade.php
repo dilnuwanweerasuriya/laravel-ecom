@@ -1,3 +1,25 @@
+<style>
+    .dataTables_filter input {
+        border-radius: 8px;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+    }
+
+    #users-table_filter {
+        padding-right: 20px;
+    }
+
+    .dataTables_length select {
+        border-radius: 8px;
+        padding: 4px 8px;
+    }
+
+    .page-item.active .page-link {
+        background-color: #191919 !important;
+        border-color: #191919 !important;
+    }
+</style>
+
 <div class="row">
     <div class="col-12">
         <div class="card my-4">
@@ -15,38 +37,31 @@
             </div>
             <div class="card-body px-0 pb-2">
                 <div class="table-responsive p-0">
-                    <table class="table align-items-center mb-0">
+                    <table id="users-table" class="table align-items-center mb-0 table-striped">
                         <thead>
                             <tr>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">User
-                                </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                    Role</th>
-                                <th
-                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                    Status</th>
-                                {{-- <th
-                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                    Employed</th> --}}
-                                <th class="text-secondary opacity-7"></th>
+                                <th class="text-center">User</th>
+                                <th class="text-center">Role</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($users as $user)
                                 <tr id="user-row-{{ $user->id }}">
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center align-items-center px-2 py-1">
+                                            <div class="d-flex align-items-center">
                                                 <img src="../assets/img/team-2.jpg"
                                                     class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
-                                            </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">{{ $user->name }}</h6>
-                                                <p class="text-xs text-secondary mb-0">{{ $user->email }}</p>
+                                                <div class="d-flex flex-column text-start">
+                                                    <h6 class="mb-0 text-sm">{{ $user->name }}</h6>
+                                                    <p class="text-xs text-secondary mb-0">{{ $user->email }}</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0 text-capitalize">{{ $user->role }}</p>
                                         {{-- <p class="text-xs text-secondary mb-0">Organization</p> --}}
                                     </td>
@@ -56,7 +71,7 @@
                                     {{-- <td class="align-middle text-center">
                                         <span class="text-secondary text-xs font-weight-bold">23/04/18</span> --}}
                                     </td>
-                                    <td class="align-middle">
+                                    <td class="align-middle text-center">
                                         <!-- Edit -->
                                         <a href="/admin/users/edit/{{ $user->id }}"
                                             class="text-secondary font-weight-bold text-xs">
@@ -87,7 +102,7 @@
 
                                             <!-- Modal Header -->
                                             <div class="modal-header bg-gradient-primary text-white">
-                                                <h5 class="modal-title d-flex align-items-center"
+                                                <h5 class="modal-title d-flex align-items-center text-white"
                                                     id="userModalLabel{{ $user->id }}">
                                                     <i class="material-symbols-rounded me-2">person</i>
                                                     User Details
@@ -158,28 +173,53 @@
 
 
 <script>
-    $(document).on('click', '.btn-delete-user', function(e) {
-        e.preventDefault();
-        var userId = $(this).data('id');
-
-        if (!confirm('Are you sure you want to delete this user?')) return;
-
-        $.ajax({
-            url: '/admin/users/delete/' + userId,
-            type: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}'
-            },
-            success: function() {
-                $('#user-row-' + userId).fadeOut(300, function() {
-                    $(this).remove();
-                });
-
-                toastr.success('User deleted successfully.');
-            },
-            error: function() {
-                toastr.error('Failed to delete user.');
+    $(document).ready(function() {
+        $('#users-table').DataTable({
+            paging: true,
+            searching: true,
+            lengthChange: true,
+            pageLength: 10,
+            ordering: false, // Disable sorting for now
+            info: true,
+            responsive: true,
+            dom: '<"row mb-3"<"col-md-6 d-flex align-items-center"l><"col-md-6 d-flex justify-content-end"f>>t<"row mt-3"<"col-md-6"i><"col-md-6 d-flex justify-content-end"p>>',
+            language: {
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ users",
+                infoEmpty: "No users available",
+                infoFiltered: "(filtered from _MAX_ total users)",
+                zeroRecords: "No matching users found",
+                search: "",
+                searchPlaceholder: "🔍 Search users...",
+                paginate: {
+                    previous: "←",
+                    next: "→"
+                }
             }
+        });
+        $(document).on('click', '.btn-delete-user', function(e) {
+            e.preventDefault();
+            var userId = $(this).data('id');
+
+            if (!confirm('Are you sure you want to delete this user?')) return;
+
+            $.ajax({
+                url: '/admin/users/delete/' + userId,
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function() {
+                    $('#user-row-' + userId).fadeOut(300, function() {
+                        $(this).remove();
+                    });
+
+                    toastr.success('User deleted successfully.');
+                },
+                error: function() {
+                    toastr.error('Failed to delete user.');
+                }
+            });
         });
     });
 </script>

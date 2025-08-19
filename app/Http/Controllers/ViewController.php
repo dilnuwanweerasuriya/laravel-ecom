@@ -204,4 +204,43 @@ class ViewController extends DataController
 
         return $this->default($data);
     }
+
+
+    //Orders Function
+    public function orders(){
+        $data = array(
+            'view' => 'backend/order/orders',
+            'title' => 'Orders',
+            'orders' => $this->getOrders(),
+        );
+        // dd($data);
+
+        return $this->default($data);
+    }
+
+    //Order Create Function
+    public function orderCreate(){
+        $data = array(
+            'view' => 'backend/order/orderCreate',
+            'title' => 'Create order',
+            'products' => $this->getProducts(),
+            'users' => $this->getUsers(),
+        );
+
+        return $this->default($data);
+    }
+
+    //Order Edit Function
+    public function orderEdit($id){
+        $data = array(
+            'view' => 'backend/order/orderEdit',
+            'title' => 'Edit order',
+            'order' => $this->getOrderData($id),
+            'users' => $this->getUsers(),
+            'products' => $this->getProducts(),
+        );
+        // dd($data);
+
+        return $this->default($data);
+    }
 }

@@ -1,3 +1,25 @@
+<style>
+    .dataTables_filter input {
+        border-radius: 8px;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+    }
+
+    #brands-table_filter{
+        padding-right: 20px;
+    }
+
+    .dataTables_length select {
+        border-radius: 8px;
+        padding: 4px 8px;
+    }
+
+    .page-item.active .page-link {
+        background-color: #191919 !important;
+        border-color: #191919 !important;
+    }
+</style>
+
 <div class="row">
     <div class="col-12">
         <div class="card my-4">
@@ -15,34 +37,30 @@
             </div>
             <div class="card-body px-0 pb-2">
                 <div class="table-responsive p-0">
-                    <table class="table align-items-center mb-0">
+                    <table id="brands-table" class="table align-items-center mb-0 table-striped">
                         <thead>
                             <tr>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Brand
-                                </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                    Slug</th>
-                                <th class="text-xxs opacity-7 ps-2">Image</th>
-                                <th
-                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                    Status</th>
-                                <th class="text-secondary opacity-7"></th>
+                                <th class="text-center">Brand</th>
+                                <th class="text-center">Slug</th>
+                                <th class="text-center">Image</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($brands as $brand)
                                 <tr id="brand-row-{{ $brand->id }}">
-                                    <td>
-                                        <div class="d-flex px-3 py-1">
+                                    <td class="text-center">
+                                        <div class="px-3 py-1">
                                             <div class="d-flex flex-column justify-content-center">
                                                 <h6 class="mb-0 text-sm">{{ $brand->name }}</h6>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0 text-capitalize">{{ $brand->slug }}</p>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         @if ($brand->image)
                                             <img src="{{ asset($brand->image) }}" alt="Brand Image"
                                                 style="height: 40px;">
@@ -55,7 +73,7 @@
                                             <span class="badge badge-sm bg-gradient-warning">Inactive</span>
                                         @endif
                                     </td>
-                                    <td class="align-middle">
+                                    <td class="align-middle text-center">
                                         <!-- Edit -->
                                         <a href="/admin/brands/edit/{{ $brand->id }}"
                                             class="text-secondary font-weight-bold text-xs">
@@ -87,7 +105,7 @@
 
                                             <!-- Header -->
                                             <div class="modal-header bg-gradient-primary text-white">
-                                                <h5 class="modal-title d-flex align-items-center"
+                                                <h5 class="modal-title d-flex align-items-center text-white"
                                                     id="brandModalLabel{{ $brand->id }}">
                                                     <i class="material-symbols-rounded me-2">branding_watermark</i>
                                                     Brand Details
@@ -154,28 +172,53 @@
 </div>
 
 <script>
-    $(document).on('click', '.btn-delete-brand', function(e) {
-        e.preventDefault();
-        var brandId = $(this).data('id');
-
-        if (!confirm('Are you sure you want to delete this brand?')) return;
-
-        $.ajax({
-            url: '/admin/brands/delete/' + brandId,
-            type: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}'
-            },
-            success: function() {
-                $('#brand-row-' + brandId).fadeOut(300, function() {
-                    $(this).remove();
-                });
-
-                toastr.success('Brand deleted successfully.');
-            },
-            error: function() {
-                toastr.error('Failed to delete brand.');
+    $(document).ready(function() {
+        $('#brands-table').DataTable({
+            paging: true,
+            searching: true,
+            lengthChange: true,
+            pageLength: 10,
+            ordering: false, // Disable sorting for now
+            info: true,
+            responsive: true,
+            dom: '<"row mb-3"<"col-md-6 d-flex align-items-center"l><"col-md-6 d-flex justify-content-end"f>>t<"row mt-3"<"col-md-6"i><"col-md-6 d-flex justify-content-end"p>>',
+            language: {
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ brands",
+                infoEmpty: "No brands available",
+                infoFiltered: "(filtered from _MAX_ total brands)",
+                zeroRecords: "No matching brands found",
+                search: "",
+                searchPlaceholder: "🔍 Search brands...",
+                paginate: {
+                    previous: "←",
+                    next: "→"
+                }
             }
+        });
+        $(document).on('click', '.btn-delete-brand', function(e) {
+            e.preventDefault();
+            var brandId = $(this).data('id');
+
+            if (!confirm('Are you sure you want to delete this brand?')) return;
+
+            $.ajax({
+                url: '/admin/brands/delete/' + brandId,
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function() {
+                    $('#brand-row-' + brandId).fadeOut(300, function() {
+                        $(this).remove();
+                    });
+
+                    toastr.success('Brand deleted successfully.');
+                },
+                error: function() {
+                    toastr.error('Failed to delete brand.');
+                }
+            });
         });
     });
 </script>

@@ -1,3 +1,25 @@
+<style>
+    .dataTables_filter input {
+        border-radius: 8px;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+    }
+
+    #products-table_filter{
+        padding-right: 20px;
+    }
+
+    .dataTables_length select {
+        border-radius: 8px;
+        padding: 4px 8px;
+    }
+
+    .page-item.active .page-link {
+        background-color: #191919 !important;
+        border-color: #191919 !important;
+    }
+</style>
+
 <div class="row">
     <div class="col-12">
         <div class="card my-4">
@@ -15,39 +37,36 @@
             </div>
             <div class="card-body px-0 pb-2">
                 <div class="table-responsive p-0">
-                    <table class="table align-items-center mb-0">
+                    <table id="products-table" class="table align-items-center mb-0 table-striped">
                         <thead>
                             <tr>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Product
-                                    Name</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                    Description</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                    Product Type</th>
-                                <th class="text-xxs opacity-7 ps-2">Image</th>
-                                <th class="text-secondary opacity-7"></th>
+                                <th class="text-center">Name</th>
+                                <th class="text-center">Description</th>
+                                <th class="text-center">Product Type</th>
+                                <th class="text-center">Primary Image</th>
+                                <th class="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($products as $product)
                                 <tr id="product-row-{{ $product->id }}">
-                                    <td>
-                                        <div class="d-flex px-3 py-1">
+                                    <td class="text-center">
+                                        <div class="px-3 py-1">
                                             <div class="d-flex flex-column justify-content-center">
                                                 <h6 class="mb-0 text-sm">{{ $product->name }}</h6>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0 text-capitalize">
                                             {{ $product->description }}</p>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0 text-capitalize">
                                             {{ $product->has_variants == 0 ? 'Simple Product' : 'Variant Product' }}
                                         </p>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         @if ($product->images)
                                             @foreach ($product->images as $image)
                                                 @if ($image->is_primary == 1)
@@ -57,7 +76,7 @@
                                             @endforeach
                                         @endif
                                     </td>
-                                    <td class="align-middle">
+                                    <td class="align-middle text-center">
                                         <!-- Edit -->
                                         <a href="/admin/products/edit/{{ $product->id }}"
                                             class="text-secondary font-weight-bold text-xs">
@@ -88,7 +107,7 @@
                                         <div class="modal-content shadow-lg rounded-3 border-0">
                                             <!-- Header -->
                                             <div class="modal-header bg-gradient-dark text-white">
-                                                <h5 class="modal-title d-flex align-items-center"
+                                                <h5 class="modal-title d-flex align-items-center text-white"
                                                     id="productModalLabel{{ $product->id }}">
                                                     <i class="material-symbols-rounded me-2">inventory_2</i>
                                                     Product Details
@@ -195,28 +214,53 @@
 </div>
 
 <script>
-    $(document).on('click', '.btn-delete-product', function(e) {
-        e.preventDefault();
-        var productId = $(this).data('id');
-
-        if (!confirm('Are you sure you want to delete this product?')) return;
-
-        $.ajax({
-            url: '/admin/products/delete/' + productId,
-            type: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}'
-            },
-            success: function() {
-                $('#product-row-' + productId).fadeOut(300, function() {
-                    $(this).remove();
-                });
-
-                toastr.success('Product deleted successfully.');
-            },
-            error: function() {
-                toastr.error('Failed to delete product.');
+    $(document).ready(function() {
+        $('#products-table').DataTable({
+            paging: true,
+            searching: true,
+            lengthChange: true,
+            pageLength: 10,
+            ordering: false, // Disable sorting for now
+            info: true,
+            responsive: true,
+            dom: '<"row mb-3"<"col-md-6 d-flex align-items-center"l><"col-md-6 d-flex justify-content-end"f>>t<"row mt-3"<"col-md-6"i><"col-md-6 d-flex justify-content-end"p>>',
+            language: {
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ products",
+                infoEmpty: "No products available",
+                infoFiltered: "(filtered from _MAX_ total products)",
+                zeroRecords: "No matching products found",
+                search: "",
+                searchPlaceholder: "🔍 Search products...",
+                paginate: {
+                    previous: "←",
+                    next: "→"
+                }
             }
+        });
+        $(document).on('click', '.btn-delete-product', function(e) {
+            e.preventDefault();
+            var productId = $(this).data('id');
+
+            if (!confirm('Are you sure you want to delete this product?')) return;
+
+            $.ajax({
+                url: '/admin/products/delete/' + productId,
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function() {
+                    $('#product-row-' + productId).fadeOut(300, function() {
+                        $(this).remove();
+                    });
+
+                    toastr.success('Product deleted successfully.');
+                },
+                error: function() {
+                    toastr.error('Failed to delete product.');
+                }
+            });
         });
     });
 </script>

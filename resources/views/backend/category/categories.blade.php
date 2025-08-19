@@ -1,3 +1,25 @@
+<style>
+    .dataTables_filter input {
+        border-radius: 8px;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+    }
+
+    #categories-table_filter {
+        padding-right: 20px;
+    }
+
+    .dataTables_length select {
+        border-radius: 8px;
+        padding: 4px 8px;
+    }
+
+    .page-item.active .page-link {
+        background-color: #191919 !important;
+        border-color: #191919 !important;
+    }
+</style>
+
 <div class="row">
     <div class="col-12">
         <div class="card my-4">
@@ -15,24 +37,20 @@
             </div>
             <div class="card-body px-0 pb-2">
                 <div class="table-responsive p-0">
-                    <table class="table align-items-center mb-0">
+                    <table id="categories-table" class="table align-items-center mb-0 table-striped">
                         <thead>
                             <tr>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Category
-                                </th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                    Slug</th>
-                                <th
-                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                    Status</th>
-                                <th class="text-secondary opacity-7"></th>
+                                <th class="text-center">Category</th>
+                                <th class="text-center">Slug</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($categories as $category)
                                 <tr id="category-row-{{ $category->id }}">
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
+                                    <td class="text-center">
+                                        <div class="px-2 py-1">
                                             <div class="d-flex flex-column justify-content-center">
                                                 <h6 class="mb-0 text-sm">{{ $category->name }}</h6>
                                                 <p class="text-xs text-secondary mb-0">
@@ -43,7 +61,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0 text-capitalize">{{ $category->slug }}
                                         </p>
                                     </td>
@@ -54,7 +72,7 @@
                                             <span class="badge badge-sm bg-gradient-warning">Inactive</span>
                                         @endif
                                     </td>
-                                    <td class="align-middle">
+                                    <td class="align-middle text-center">
                                         <!-- Edit -->
                                         <a href="/admin/categories/edit/{{ $category->id }}"
                                             class="text-secondary font-weight-bold text-xs">
@@ -84,8 +102,8 @@
                                         <div class="modal-content shadow-lg rounded-3 border-0">
 
                                             <!-- Modal Header -->
-                                            <div class="modal-header bg-gradient-info text-white">
-                                                <h5 class="modal-title d-flex align-items-center"
+                                            <div class="modal-header bg-gradient-primary text-white">
+                                                <h5 class="modal-title d-flex align-items-center text-white"
                                                     id="categoryModalLabel{{ $category->id }}">
                                                     <i class="material-symbols-rounded me-2">category</i>
                                                     Category Details
@@ -143,28 +161,53 @@
 </div>
 
 <script>
-    $(document).on('click', '.btn-delete-category', function(e) {
-        e.preventDefault();
-        var categoryId = $(this).data('id');
-
-        if (!confirm('Are you sure you want to delete this category?')) return;
-
-        $.ajax({
-            url: '/admin/categories/delete/' + categoryId,
-            type: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}'
-            },
-            success: function() {
-                $('#category-row-' + categoryId).fadeOut(300, function() {
-                    $(this).remove();
-                });
-
-                toastr.success('Category deleted successfully.');
-            },
-            error: function() {
-                toastr.error('Failed to delete category.');
+    $(document).ready(function() {
+        $('#categories-table').DataTable({
+            paging: true,
+            searching: true,
+            lengthChange: true,
+            pageLength: 10,
+            ordering: false, // Disable sorting for now
+            info: true,
+            responsive: true,
+            dom: '<"row mb-3"<"col-md-6 d-flex align-items-center"l><"col-md-6 d-flex justify-content-end"f>>t<"row mt-3"<"col-md-6"i><"col-md-6 d-flex justify-content-end"p>>',
+            language: {
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ categories",
+                infoEmpty: "No categories available",
+                infoFiltered: "(filtered from _MAX_ total categories)",
+                zeroRecords: "No matching categories found",
+                search: "",
+                searchPlaceholder: "🔍 Search categories...",
+                paginate: {
+                    previous: "←",
+                    next: "→"
+                }
             }
+        });
+        $(document).on('click', '.btn-delete-category', function(e) {
+            e.preventDefault();
+            var categoryId = $(this).data('id');
+
+            if (!confirm('Are you sure you want to delete this category?')) return;
+
+            $.ajax({
+                url: '/admin/categories/delete/' + categoryId,
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function() {
+                    $('#category-row-' + categoryId).fadeOut(300, function() {
+                        $(this).remove();
+                    });
+
+                    toastr.success('Category deleted successfully.');
+                },
+                error: function() {
+                    toastr.error('Failed to delete category.');
+                }
+            });
         });
     });
 </script>

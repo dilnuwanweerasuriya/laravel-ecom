@@ -1,5 +1,5 @@
 <style>
-    form.input{
+    form.input {
         border: 1px solid gray !important;
     }
 </style>
@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div class="card-body pt-4 px-4">
-                <form method="POST" action="/admin/registerUser">
+                <form id="userForm" method="POST" action="/admin/registerUser">
                     @csrf
 
                     <div class="row">
@@ -69,3 +69,63 @@
         </div>
     </div>
 </div>
+
+<script>
+    $("#userForm").validate({
+        rules: {
+            name: {
+                required: true,
+                maxlength: 50
+            },
+            email: {
+                required: true,
+            },
+            password: {
+                required: true,
+                minlength: 5
+            },
+            phone: {
+                required: true,
+            },
+            address: {
+                required: true,
+            },
+            role: {
+                required: true,
+            },
+        },
+        messages: {
+            name: {
+                required: "Please enter the user name",
+                maxlength: "User name cannot exceed 50 characters"
+            },
+            email: {
+                required: "Please enter an email address",
+            },
+            password: {
+                required: "Please enter a password",
+                minlength: "Password must be at least 5 characters long"
+            },
+            phone: {
+                required: "Please enter mobile number",
+            },
+            address: {
+                required: "Please enter the address",
+            },
+            role: {
+                required: "Please select an user role",
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            error.addClass('text-danger');
+            error.insertAfter(element);
+        },
+        highlight: function(element, errorClass, validClass) {
+            $(element).addClass('is-invalid').removeClass('is-valid');
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).removeClass('is-invalid').addClass('is-valid');
+        }
+    });
+</script>

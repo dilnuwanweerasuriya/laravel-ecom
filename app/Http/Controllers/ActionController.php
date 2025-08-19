@@ -17,6 +17,10 @@ use App\Models\ProductImage;
 use App\Models\ProductVariant;
 use App\Models\VariantImage;
 use App\Models\ProductVariantAttributes;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Address;
+use App\Models\Payment;
 
 class ActionController extends Controller
 {
@@ -763,5 +767,188 @@ class ActionController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+    //Create Order
+    public function orderAdd(Request $request){
+        // dd($request);
+        try {
+            $rules = [
+                'shipping' => 'required|array|min:1',
+                'shipping.user' => 'required',
+                'shipping.address' => 'required',
+                'shipping.city' => 'required',
+                'shipping.zip' => 'required',
+                'shipping.phone' => 'required',
+                'products' => 'required|array|min:1',
+                'payment_method' => 'required',
+                'subtotal' => 'required',
+                'delivery_fee' => 'required',
+                'total' => 'required',
+            ];
+
+            $validated = $request->validate($rules);
+
+            DB::beginTransaction();
+
+            $order = Order::create([
+                'user_id' => $request->shipping['user'],
+                'total_amount' => $request->total,
+                'delivery_fee' => $request->delivery_fee,
+                'shipping_address' => $request->shipping['address'],
+                'order_remarks' => $request->order_remarks ?? null,
+            ]);
+
+            foreach ($request->products as $key => $product) {
+                $orderItems = OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $product['id'],
+                    'variant_id' => $product['variant_id'] ?? null,
+                    'quantity' => $product['quantity'],
+                    'price_at_time' => $product['price'],
+                ]);
+            }
+
+            $user = User::find($request->shipping['user']);
+
+            $address = Address::create([
+                'order_id' => $order->id,
+                'full_name' => $user->name,
+                'phone' => $request->shipping['phone'],
+                'street_address' => $request->shipping['address'],
+                'city' => $request->shipping['city'],
+                'state' => $request->shipping['state'] ?? null,
+                'zip_code' => $request->shipping['zip'],
+            ]);
+
+            if($request->payment_method == 'cash'){
+                $payment = Payment::create([
+                    'order_id' => $order->id,
+                    'payment_method' => $request->payment_method,
+                    'status' => 'pending',
+                    'transaction_id' => '-',
+                ]);
+
+                $order->payemnt_id = $payment->id;
+                $order->address_id = $address->id;
+                $order->save();
+            }elseif ($request->payment_method == 'payhere') {
+                dd('Payhere');
+            }
+
+            DB::commit();
+
+            toastr()->success('Order created successfully.');
+            return redirect('/admin/orders');
+
+        } catch (\Throwable $e) {
+            DB::rollback();dd($e);
+            toastr()->error('Order creation failed. Please try again.');
+            return redirect()->back();
+        }
+    }
+
+    //Order Update
+    public function orderUpdate(Request $request, $id){
+        // dd($request);
+        try {
+            $rules = [
+                'shipping' => 'required|array|min:1',
+                'shipping.user' => 'required',
+                'shipping.address' => 'required',
+                'shipping.city' => 'required',
+                'shipping.zip' => 'required',
+                'shipping.phone' => 'required',
+                'products' => 'required|array|min:1',
+                'payment_method' => 'required',
+                'subtotal' => 'required',
+                'delivery_fee' => 'required',
+                'total' => 'required',
+            ];
+
+            $validated = $request->validate($rules);
+
+            DB::beginTransaction();
+
+            $order = Order::findOrFail($id);
+
+            $order->user_id = $request->shipping['user'];
+            $order->total_amount = $request->total;
+            $order->delivery_fee = $request->delivery_fee;
+            $order->shipping_address = $request->shipping['address'];
+            $order->order_remarks = $request->order_remarks ?? null;
+            $order->save();
+
+            $order->items()->delete();
+
+            foreach ($request->products as $key => $product) {
+                $order->items()->create([
+                    'order_id' => $order->id,
+                    'product_id' => $product['product_id'],
+                    'variant_id' => $product['variant_id'] ?? null,
+                    'quantity' => $product['quantity'],
+                    'price_at_time' => $product['price'],
+                ]);
+            }
+
+            $user = User::findOrFail($request->shipping['user']);
+
+            $orderAddress = Address::where('order_id', $order->id)->first();
+            $orderAddress->full_name = $user->name;
+            $orderAddress->phone = $request->shipping['phone'];
+            $orderAddress->street_address = $request->shipping['address'];
+            $orderAddress->city = $request->shipping['city'];
+            $orderAddress->state = $request->shipping['state'] ?? null;
+            $orderAddress->zip_code = $request->shipping['zip'];
+            $orderAddress->save();
+
+            $payment = $order->payment ?? new Payment(['order_id' => $order->id]);
+            $payment->payment_method = $request->payment_method;
+            if ($request->payment_method == 'cash') {
+                $payment->status = 'pending';
+                $payment->transaction_id = '-';
+            }elseif ($request->payment_method == 'payhere') {
+                dd('Payhere');
+            }
+            $payment->save();
+
+            $order->payment_id = $payment->id;
+            $order->save();
+
+            DB::commit();
+
+            toastr()->success('Order created successfully.');
+            return redirect('/admin/orders');
+
+        } catch (\Throwable $e) {
+            DB::rollback();dd($e);
+            toastr()->error('Order creation failed. Please try again.');
+            return redirect()->back();
+        }
+    }
+
+    //Order Delete (AJAX)
+    public function orderDelete($id){
+        try {
+            DB::beginTransaction();
+            $order = Order::with('payment','items')->where('id', $id)->first();
+
+            Address::where('order_id', $order->id)->delete();
+            
+            if($order->payment){
+                $order->payment()->delete();
+            }
+
+            if($order->items){
+                $order->items()->delete();
+            }
+            $order->delete();
+            DB::commit();
+
+            return response()->json(['success' => true]);
+        } catch (\Throwable $e) {
+            DB::rollback();dd($e);
+            return response()->json(['error' => 'Failed to delete attribute.'], 500);
+        }
     }
 }

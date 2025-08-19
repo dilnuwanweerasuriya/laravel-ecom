@@ -1,3 +1,25 @@
+<style>
+    .dataTables_filter input {
+        border-radius: 8px;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+    }
+
+    #attributes-table_filter{
+        padding-right: 20px;
+    }
+
+    .dataTables_length select {
+        border-radius: 8px;
+        padding: 4px 8px;
+    }
+
+    .page-item.active .page-link {
+        background-color: #191919 !important;
+        border-color: #191919 !important;
+    }
+</style>
+
 <div class="row">
     <div class="col-12">
         <div class="card my-4">
@@ -15,16 +37,12 @@
             </div>
             <div class="card-body px-0 pb-2">
                 <div class="table-responsive p-0">
-                    <table class="table align-items-center mb-0">
+                    <table id="attributes-table" class="table align-items-center mb-0 table-striped">
                         <thead>
                             <tr>
-                                <th
-                                    class="text-uppercase text-secondary text-center text-xxs font-weight-bolder opacity-7">
-                                    Attribute</th>
-                                <th
-                                    class="text-uppercase text-secondary text-center text-xxs font-weight-bolder opacity-7">
-                                    Attribute Values</th>
-                                <th class="text-secondary text-center opacity-7"></th>
+                                <th class="text-center">Attribute</th>
+                                <th class="text-center">Attribute Values</th>
+                                <th class="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -76,7 +94,7 @@
                                         <div class="modal-content shadow-lg rounded-3 border-0">
                                             <!-- Header -->
                                             <div class="modal-header bg-gradient-primary text-white">
-                                                <h5 class="modal-title d-flex align-items-center"
+                                                <h5 class="modal-title d-flex align-items-center text-white"
                                                     id="attributeModalLabel{{ $attribute->id }}">
                                                     <i class="material-symbols-rounded me-2">tune</i>
                                                     Attribute Details
@@ -130,28 +148,55 @@
 </div>
 
 <script>
-    $(document).on('click', '.btn-delete-attribute', function(e) {
-        e.preventDefault();
-        var attributeId = $(this).data('id');
-
-        if (!confirm('Are you sure you want to delete this attribute?')) return;
-
-        $.ajax({
-            url: '/admin/attributes/delete/' + attributeId,
-            type: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}'
-            },
-            success: function() {
-                $('#attribute-row-' + attributeId).fadeOut(300, function() {
-                    $(this).remove();
-                });
-
-                toastr.success('Attribute deleted successfully.');
-            },
-            error: function() {
-                toastr.error('Failed to delete attribute.');
+    $(document).ready(function() {
+        $('#attributes-table').DataTable({
+            paging: true,
+            searching: true,
+            lengthChange: true,
+            pageLength: 10,
+            ordering: false, // Disable sorting for now
+            info: true,
+            responsive: true,
+            dom: '<"row mb-3"<"col-md-6 d-flex align-items-center"l><"col-md-6 d-flex justify-content-end"f>>t<"row mt-3"<"col-md-6"i><"col-md-6 d-flex justify-content-end"p>>',
+            language: {
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ attributes",
+                infoEmpty: "No attributes available",
+                infoFiltered: "(filtered from _MAX_ total attributes)",
+                zeroRecords: "No matching attributes found",
+                search: "",
+                searchPlaceholder: "🔍 Search attributes...",
+                paginate: {
+                    previous: "←",
+                    next: "→"
+                }
             }
+        });
+
+        // Delete functionality remains same
+        $(document).on('click', '.btn-delete-attribute', function(e) {
+            e.preventDefault();
+            var attributeId = $(this).data('id');
+
+            if (!confirm('Are you sure you want to delete this attribute?')) return;
+
+            $.ajax({
+                url: '/admin/attributes/delete/' + attributeId,
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function() {
+                    $('#attribute-row-' + attributeId).fadeOut(300, function() {
+                        $(this).remove();
+                    });
+
+                    toastr.success('Attribute deleted successfully.');
+                },
+                error: function() {
+                    toastr.error('Failed to delete attribute.');
+                }
+            });
         });
     });
 </script>

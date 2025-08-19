@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div class="card-body pt-4 px-4">
-                <form action="/admin/addProduct" id="productForm" method="POST" enctype="multipart/form-data">
+                <form id="productForm" action="/admin/addProduct" id="productForm" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="row">
@@ -103,7 +103,6 @@
                     <div class="text-end">
                         <button type="submit" class="btn bg-gradient-dark">Create</button>
                     </div>
-                </form>
                 </form>
             </div>
         </div>

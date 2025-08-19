@@ -1,3 +1,25 @@
+<style>
+    .dataTables_filter input {
+        border-radius: 8px;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+    }
+
+    #stocks-table_filter{
+        padding-right: 20px;
+    }
+
+    .dataTables_length select {
+        border-radius: 8px;
+        padding: 4px 8px;
+    }
+
+    .page-item.active .page-link {
+        background-color: #191919 !important;
+        border-color: #191919 !important;
+    }
+</style>
+
 <div class="row">
     <div class="col-12">
         <div class="card my-4">
@@ -15,39 +37,36 @@
             </div>
             <div class="card-body px-0 pb-2">
                 <div class="table-responsive p-0">
-                    <table class="table align-items-center mb-0">
+                    <table id="stocks-table" class="table align-items-center mb-0 table-striped">
                         <thead>
                             <tr>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Product
-                                    Name</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                    Product Type</th>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                    Current Stock</th>
-                                <th class="text-secondary opacity-7"></th>
+                                <th class="text-center">Name</th>
+                                <th class="text-center">Product Type</th>
+                                <th class="text-center">Stock Count</th>
+                                <th class="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($products as $product)
                                 <tr id="product-row-{{ $product->id }}">
-                                    <td>
-                                        <div class="d-flex px-3 py-1">
+                                    <td class="text-center">
+                                        <div class="px-3 py-1">
                                             <div class="d-flex flex-column justify-content-center">
                                                 <h6 class="mb-0 text-sm">{{ $product->name }}</h6>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0 text-capitalize">
                                             {{ $product->has_variants == 0 ? 'Simple Product' : 'Variant Product' }}
                                         </p>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0 text-capitalize">
                                             {{ $product->has_variants == 0 ? $product->stock : 'Variant' }}
                                         </p>
                                     </td>
-                                    <td class="align-middle">
+                                    <td class="align-middle text-center">
                                         <!-- View (opens modal) -->
                                         <a href="javascript:void(0)" class="text-secondary font-weight-bold text-xs"
                                             data-bs-toggle="modal" data-bs-target="#productModal{{ $product->id }}"
@@ -159,6 +178,30 @@
 
 <script>
     $(document).ready(function() {
+        $('#stocks-table').DataTable({
+            paging: true,
+            searching: true,
+            lengthChange: true,
+            pageLength: 10,
+            ordering: false, // Disable sorting for now
+            info: true,
+            responsive: true,
+            dom: '<"row mb-3"<"col-md-6 d-flex align-items-center"l><"col-md-6 d-flex justify-content-end"f>>t<"row mt-3"<"col-md-6"i><"col-md-6 d-flex justify-content-end"p>>',
+            language: {
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ products",
+                infoEmpty: "No products available",
+                infoFiltered: "(filtered from _MAX_ total products)",
+                zeroRecords: "No matching products found",
+                search: "",
+                searchPlaceholder: "🔍 Search products...",
+                paginate: {
+                    previous: "←",
+                    next: "→"
+                }
+            }
+        });
+
         $('.save-stock-btn').on('click', function() {
             let productId = $(this).data('product-id');
             let modal = $(this).closest('.modal');

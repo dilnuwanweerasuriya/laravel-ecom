@@ -7,7 +7,7 @@
                 </div>
             </div>
             <div class="card-body pt-4 px-4">
-                <form method="POST" action="/admin/addCategory">
+                <form id="categoryForm" method="POST" action="/admin/addCategory">
                     @csrf
 
                     <div class="row">
@@ -57,6 +57,32 @@
 
 <script>
     $(document).ready(function() {
+        $("#categoryForm").validate({
+            rules: {
+                name: {
+                    required: true,
+                    maxlength: 50
+                },
+            },
+            messages: {
+                name: {
+                    required: "Please enter an brand name",
+                    maxlength: "Brand name cannot exceed 50 characters"
+                },
+            },
+            errorElement: 'span',
+            errorPlacement: function(error, element) {
+                error.addClass('text-danger');
+                error.insertAfter(element);
+            },
+            highlight: function(element, errorClass, validClass) {
+                $(element).addClass('is-invalid').removeClass('is-valid');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).removeClass('is-invalid').addClass('is-valid');
+            }
+        });
+
         $('#category').on('input', function() {
             const category = $(this).val();
             const slug = category

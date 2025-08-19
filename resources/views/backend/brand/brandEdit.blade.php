@@ -7,7 +7,7 @@
                 </div>
             </div>
             <div class="card-body pt-4 px-4">
-                <form method="POST" action="/admin/updateBrand" enctype="multipart/form-data">
+                <form id="brandForm" method="POST" action="/admin/updateBrand" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="id" value="{{ $brand->id }}">
 
@@ -61,6 +61,38 @@
 <script>
     // Live Slug Generator
     $(document).ready(function () {
+        $("#brandForm").validate({
+            rules: {
+                name: {
+                    required: true,
+                    maxlength: 50
+                },
+                image: {
+                    required: true,
+                }
+            },
+            messages: {
+                name: {
+                    required: "Please enter an brand name",
+                    maxlength: "Brand name cannot exceed 50 characters"
+                },
+                image: {
+                    required: "Please upload an image",
+                }
+            },
+            errorElement: 'span',
+            errorPlacement: function(error, element) {
+                error.addClass('text-danger');
+                error.insertAfter(element);
+            },
+            highlight: function(element, errorClass, validClass) {
+                $(element).addClass('is-invalid').removeClass('is-valid');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).removeClass('is-invalid').addClass('is-valid');
+            }
+        });
+        
         $('#brand').on('input', function () {
             const brand = $(this).val();
             const slug = brand

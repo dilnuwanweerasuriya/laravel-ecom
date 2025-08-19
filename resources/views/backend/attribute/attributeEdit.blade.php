@@ -7,7 +7,7 @@
                 </div>
             </div>
             <div class="card-body pt-4 px-4">
-                <form method="POST" action="/admin/updateAttribute">
+                <form id="attributeForm" method="POST" action="/admin/updateAttribute">
                     @csrf
 
                     <div class="row">
@@ -23,14 +23,16 @@
                         <div class="col-md-12">
                             <label class="form-label">Attribute Values</label>
                             <div id="attribute-values">
-                                @foreach($attribute->attributeValues as $val)
+                                @foreach ($attribute->attributeValues as $val)
                                     <div class="input-group mb-2">
-                                        <input type="text" name="values[]" class="form-control" value="{{ $val->value }}" required>
+                                        <input type="text" name="values[]" class="form-control"
+                                            value="{{ $val->value }}" required>
                                         <button type="button" class="btn btn-danger remove-value">&times;</button>
                                     </div>
                                 @endforeach
                             </div>
-                            <button type="button" id="add-value" class="btn btn-sm btn-primary mt-2">+ Add Value</button>
+                            <button type="button" id="add-value" class="btn btn-sm btn-primary mt-2">+ Add
+                                Value</button>
                         </div>
                     </div>
 
@@ -47,10 +49,35 @@
 {{-- jQuery Script for Dynamic Fields --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
+        $("#attributeForm").validate({
+            rules: {
+                name: {
+                    required: true,
+                    maxlength: 50
+                }
+            },
+            messages: {
+                name: {
+                    required: "Please enter an attribute name",
+                    maxlength: "Attribute name cannot exceed 50 characters"
+                }
+            },
+            errorElement: 'span',
+            errorPlacement: function(error, element) {
+                error.addClass('text-danger');
+                error.insertAfter(element);
+            },
+            highlight: function(element, errorClass, validClass) {
+                $(element).addClass('is-invalid').removeClass('is-valid');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).removeClass('is-invalid').addClass('is-valid');
+            }
+        });
 
         // Add new attribute value field
-        $('#add-value').on('click', function () {
+        $('#add-value').on('click', function() {
             $('#attribute-values').append(`
                 <div class="input-group mb-2">
                     <input type="text" name="values[]" class="form-control" placeholder="Enter value" required>
@@ -60,7 +87,7 @@
         });
 
         // Remove attribute value field
-        $(document).on('click', '.remove-value', function () {
+        $(document).on('click', '.remove-value', function() {
             $(this).closest('.input-group').remove();
         });
 

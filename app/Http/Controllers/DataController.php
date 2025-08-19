@@ -11,12 +11,13 @@ use App\Models\AttributeValue;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantAttributes;
+use App\Models\Order;
 
 class DataController extends Controller
 {
     //Get Users
     public function getUsers(){
-        $users = User::paginate(10);
+        $users = User::get();
         return $users;
     }
 
@@ -28,7 +29,7 @@ class DataController extends Controller
 
     //Get Categories
     public function getCategories(){
-        $categories = Category::with('parent')->paginate(10);
+        $categories = Category::with('parent')->get();
         return $categories;
     }
 
@@ -40,7 +41,7 @@ class DataController extends Controller
 
     //Get Brands
     public function getBrands(){
-        $brands = Brand::paginate(10);
+        $brands = Brand::get();
         return $brands;
     }
 
@@ -64,7 +65,7 @@ class DataController extends Controller
 
     //Get Products
     public function getProducts(){
-        $products = Product::with('images','variants.images')->paginate(10);
+        $products = Product::with('images','variants.images')->get();
         return $products;
     }
 
@@ -72,5 +73,26 @@ class DataController extends Controller
     public function getProductData($id){
         $product = Product::with('images','variants.images','variants.attributes')->where('id', $id)->first();
         return $product;
+    }
+
+    //Get Orders
+    public function getOrders(){
+        $orders = Order::with('user','payment','items.product','items.variant')
+                ->leftJoin('addresses', 'addresses.order_id', '=', 'orders.id')
+                ->select('orders.*', 'addresses.*')
+                ->orderBy('orders.created_at','desc')
+                ->get();
+        return $orders;
+    }
+
+    //Get Order Data
+    public function getOrderData($id){
+        $order = Order::with('user','payment','items.product','items.variant')
+                ->leftJoin('addresses', 'addresses.order_id', '=', 'orders.id')
+                ->where('orders.id', '=', $id)
+                ->select('orders.*', 'addresses.*')
+                ->orderBy('orders.created_at','desc')
+                ->first();
+        return $order;
     }
 }

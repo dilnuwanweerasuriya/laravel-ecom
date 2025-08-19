@@ -94,4 +94,17 @@ Route::group([
 
     Route::post('/admin/stock/update', 'ActionController@stockUpdate');
 
+     //order
+    Route::get('/admin/orders', 'ViewController@orders');
+
+    Route::get('/admin/orders/create', 'ViewController@orderCreate');
+
+    Route::post('/admin/addOrder', 'ActionController@orderAdd');
+
+    Route::get('/admin/orders/edit/{id}', 'ViewController@orderEdit');
+
+    Route::post('/admin/updateOrder/{id}', 'ActionController@orderUpdate');
+
+    Route::post('/admin/orders/delete/{id}', 'ActionController@orderDelete');
+
 });
