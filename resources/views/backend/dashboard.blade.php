@@ -1,551 +1,337 @@
+<style>
+    .dataTables_filter input {
+        border-radius: 8px;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+    }
+
+    #orders-table_filter {
+        padding-right: 20px;
+    }
+
+    .dataTables_length select {
+        border-radius: 8px;
+        padding: 4px 8px;
+    }
+
+    .page-item.active .page-link {
+        background-color: #191919 !important;
+        border-color: #191919 !important;
+    }
+
+    .hover-shadow:hover {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
+        transform: translateY(-2px);
+        transition: all 0.3s ease-in-out;
+    }
+
+    .table td,
+    .table th {
+        vertical-align: middle;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+    }
+</style>
+
 <div>
     <div class="row">
         <div class="ms-3">
             <h3 class="mb-0 h4 font-weight-bolder">Dashboard</h3>
-            <p class="mb-4">
-                Check the sales, value and bounce rate by country.
-            </p>
         </div>
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+        <div class="col-xl-3 col-sm-6 mb-xl-0 my-4">
             <div class="card">
                 <div class="card-header p-2 ps-3">
                     <div class="d-flex justify-content-between">
-                        <div>
-                            <p class="text-sm mb-0 text-capitalize">Today's Money</p>
-                            <h4 class="mb-0">$53k</h4>
+                        <div class="mb-4">
+                            <p class="text-sm mb-0 text-capitalize">New Orders</p>
+                            <h4 class="mt-2">$53k</h4>
                         </div>
                         <div
                             class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
-                            <i class="material-symbols-rounded opacity-10">weekend</i>
+                            <i class="material-symbols-rounded opacity-10">wand_stars</i>
                         </div>
                     </div>
                 </div>
-                <hr class="dark horizontal my-0">
-                <div class="card-footer p-2 ps-3">
-                    <p class="mb-0 text-sm"><span class="text-success font-weight-bolder">+55% </span>than
-                        last week</p>
-                </div>
             </div>
         </div>
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+        <div class="col-xl-3 col-sm-6 mb-xl-0 my-4">
             <div class="card">
                 <div class="card-header p-2 ps-3">
                     <div class="d-flex justify-content-between">
-                        <div>
-                            <p class="text-sm mb-0 text-capitalize">Today's Users</p>
-                            <h4 class="mb-0">2300</h4>
+                        <div class="mb-4">
+                            <p class="text-sm mb-0 text-capitalize">Order Processing</p>
+                            <h4 class="mt-2">2300</h4>
                         </div>
                         <div
                             class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
-                            <i class="material-symbols-rounded opacity-10">person</i>
+                            <i class="material-symbols-rounded opacity-10">paid</i>
                         </div>
                     </div>
                 </div>
-                <hr class="dark horizontal my-0">
-                <div class="card-footer p-2 ps-3">
-                    <p class="mb-0 text-sm"><span class="text-success font-weight-bolder">+3% </span>than last
-                        month</p>
-                </div>
             </div>
         </div>
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+        <div class="col-xl-3 col-sm-6 mb-xl-0 my-4">
             <div class="card">
                 <div class="card-header p-2 ps-3">
                     <div class="d-flex justify-content-between">
-                        <div>
-                            <p class="text-sm mb-0 text-capitalize">Ads Views</p>
-                            <h4 class="mb-0">3,462</h4>
-                        </div>
+                        <div class="mb-4">
+                            <p class="text-sm mb-0 text-capitalize">Order Shipped</p>
+                            <h4 class="mt-2">3,462</h4>
+                        </div class="mb-4">
                         <div
                             class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
-                            <i class="material-symbols-rounded opacity-10">leaderboard</i>
+                            <i class="material-symbols-rounded opacity-10">local_shipping</i>
                         </div>
                     </div>
                 </div>
-                <hr class="dark horizontal my-0">
-                <div class="card-footer p-2 ps-3">
-                    <p class="mb-0 text-sm"><span class="text-danger font-weight-bolder">-2% </span>than
-                        yesterday</p>
-                </div>
             </div>
         </div>
-        <div class="col-xl-3 col-sm-6">
+        <div class="col-xl-3 col-sm-6 mb-xl-0 my-4">
             <div class="card">
                 <div class="card-header p-2 ps-3">
                     <div class="d-flex justify-content-between">
-                        <div>
-                            <p class="text-sm mb-0 text-capitalize">Sales</p>
-                            <h4 class="mb-0">$103,430</h4>
+                        <div class="mb-4">
+                            <p class="text-sm mb-0 text-capitalize">Average Price</p>
+                            <h4 class="mt-2">$103,430</h4>
                         </div>
                         <div
                             class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
-                            <i class="material-symbols-rounded opacity-10">weekend</i>
+                            <i class="material-symbols-rounded opacity-10">wallet</i>
                         </div>
-                    </div>
-                </div>
-                <hr class="dark horizontal my-0">
-                <div class="card-footer p-2 ps-3">
-                    <p class="mb-0 text-sm"><span class="text-success font-weight-bolder">+5% </span>than
-                        yesterday</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-4 col-md-6 mt-4 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <h6 class="mb-0 ">Website Views</h6>
-                    <p class="text-sm ">Last Campaign Performance</p>
-                    <div class="pe-2">
-                        <div class="chart">
-                            <canvas id="chart-bars" class="chart-canvas" height="170"></canvas>
-                        </div>
-                    </div>
-                    <hr class="dark horizontal">
-                    <div class="d-flex ">
-                        <i class="material-symbols-rounded text-sm my-auto me-1">schedule</i>
-                        <p class="mb-0 text-sm"> campaign sent 2 days ago </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6 mt-4 mb-4">
-            <div class="card ">
-                <div class="card-body">
-                    <h6 class="mb-0 "> Daily Sales </h6>
-                    <p class="text-sm "> (<span class="font-weight-bolder">+15%</span>) increase in today
-                        sales. </p>
-                    <div class="pe-2">
-                        <div class="chart">
-                            <canvas id="chart-line" class="chart-canvas" height="170"></canvas>
-                        </div>
-                    </div>
-                    <hr class="dark horizontal">
-                    <div class="d-flex ">
-                        <i class="material-symbols-rounded text-sm my-auto me-1">schedule</i>
-                        <p class="mb-0 text-sm"> updated 4 min ago </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 mt-4 mb-3">
-            <div class="card">
-                <div class="card-body">
-                    <h6 class="mb-0 ">Completed Tasks</h6>
-                    <p class="text-sm ">Last Campaign Performance</p>
-                    <div class="pe-2">
-                        <div class="chart">
-                            <canvas id="chart-line-tasks" class="chart-canvas" height="170"></canvas>
-                        </div>
-                    </div>
-                    <hr class="dark horizontal">
-                    <div class="d-flex ">
-                        <i class="material-symbols-rounded text-sm my-auto me-1">schedule</i>
-                        <p class="mb-0 text-sm">just updated</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row mb-4">
-        <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
-            <div class="card">
-                <div class="card-header pb-0">
-                    <div class="row">
-                        <div class="col-lg-6 col-7">
-                            <h6>Projects</h6>
-                            <p class="text-sm mb-0">
-                                <i class="fa fa-check text-info" aria-hidden="true"></i>
-                                <span class="font-weight-bold ms-1">30 done</span> this month
-                            </p>
-                        </div>
-                        <div class="col-lg-6 col-5 my-auto text-end">
-                            <div class="dropdown float-lg-end pe-4">
-                                <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    <i class="fa fa-ellipsis-v text-secondary"></i>
-                                </a>
-                                <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
-                                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Action</a></li>
-                                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Another
-                                            action</a></li>
-                                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Something else
-                                            here</a></li>
-                                </ul>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card my-4">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                    <div class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3">
+                        <div class="row align-items-center">
+                            <div class="col-sm-6">
+                                <h6 class="text-white text-capitalize ps-3 me-3">New Orders</h6>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
-                    <div class="table-responsive">
-                        <table class="table align-items-center mb-0">
+                    <div class="table-responsive p-0">
+                        <table id="orders-table" class="table align-items-center mb-0 table-striped">
                             <thead>
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Companies</th>
-                                    <th
-                                        class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        Members</th>
-                                    <th
-                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Budget</th>
-                                    <th
-                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Completion</th>
+                                    <th class="text-center">Order ID</th>
+                                    <th class="text-center">User</th>
+                                    <th class="text-center">Total Amount</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div>
-                                                <img src="../assets/img/small-logos/logo-xd.svg"
-                                                    class="avatar avatar-sm me-3" alt="xd">
-                                            </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Material XD Version</h6>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="avatar-group mt-2">
-                                            <a href="javascript:;" class="avatar avatar-xs rounded-circle"
-                                                data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                title="Ryan Tompson">
-                                                <img src="../assets/img/team-1.jpg" alt="team1">
-                                            </a>
-                                            <a href="javascript:;" class="avatar avatar-xs rounded-circle"
-                                                data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                title="Romina Hadid">
-                                                <img src="../assets/img/team-2.jpg" alt="team2">
-                                            </a>
-                                            <a href="javascript:;" class="avatar avatar-xs rounded-circle"
-                                                data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                title="Alexander Smith">
-                                                <img src="../assets/img/team-3.jpg" alt="team3">
-                                            </a>
-                                            <a href="javascript:;" class="avatar avatar-xs rounded-circle"
-                                                data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                title="Jessica Doe">
-                                                <img src="../assets/img/team-4.jpg" alt="team4">
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <td class="align-middle text-center text-sm">
-                                        <span class="text-xs font-weight-bold"> $14,000 </span>
-                                    </td>
-                                    <td class="align-middle">
-                                        <div class="progress-wrapper w-75 mx-auto">
-                                            <div class="progress-info">
-                                                <div class="progress-percentage">
-                                                    <span class="text-xs font-weight-bold">60%</span>
+                                @foreach ($orders as $order)
+                                    @php
+                                        switch ($order->status) {
+                                            case 'pending':
+                                                $statusColor = 'warning';
+                                                break;
+
+                                            case 'paid':
+                                                $statusColor = 'info';
+                                                break;
+
+                                            case 'shipped':
+                                            case 'delivered':
+                                                $statusColor = 'success';
+                                                break;
+
+                                            case 'cancelled':
+                                                $statusColor = 'danger';
+                                                break;
+
+                                            default:
+                                                $statusColor = 'dark';
+                                                break;
+                                        }
+                                    @endphp
+
+                                    <tr id="order-row-{{ $order->id }}">
+                                        <td class="text-center">
+                                            <div class="px-3 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-sm"># {{ $order->id }}</h6>
                                                 </div>
                                             </div>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-gradient-info w-60" role="progressbar"
-                                                    aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div>
-                                                <img src="../assets/img/small-logos/logo-atlassian.svg"
-                                                    class="avatar avatar-sm me-3" alt="atlassian">
-                                            </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Add Progress Track</h6>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="avatar-group mt-2">
-                                            <a href="javascript:;" class="avatar avatar-xs rounded-circle"
-                                                data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                title="Romina Hadid">
-                                                <img src="../assets/img/team-2.jpg" alt="team5">
+                                        </td>
+                                        <td class="text-center">
+                                            <p class="text-xs font-weight-bold mb-0 text-capitalize">
+                                                {{ $order->user->name }}</p>
+                                        </td>
+                                        <td class="text-center">
+                                            <p class="text-xs font-weight-bold mb-0 text-capitalize">
+                                                {{ $order->total_amount }}
+                                            </p>
+                                        </td>
+                                        <td class="text-center">
+                                            <p class="text-xs font-weight-bold mb-0 text-capitalize">
+                                                <span class="badge bg-{{ $statusColor }}">{{ $order->status }}</span>
+                                            </p>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <!-- View (opens modal) -->
+                                            <a href="javascript:void(0)" class="text-secondary font-weight-bold text-xs"
+                                                data-bs-toggle="modal" data-bs-target="#orderModal{{ $order->id }}"
+                                                title="View order">
+                                                <i class="material-symbols-rounded opacity-5">visibility</i>
                                             </a>
-                                            <a href="javascript:;" class="avatar avatar-xs rounded-circle"
-                                                data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                title="Jessica Doe">
-                                                <img src="../assets/img/team-4.jpg" alt="team6">
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <td class="align-middle text-center text-sm">
-                                        <span class="text-xs font-weight-bold"> $3,000 </span>
-                                    </td>
-                                    <td class="align-middle">
-                                        <div class="progress-wrapper w-75 mx-auto">
-                                            <div class="progress-info">
-                                                <div class="progress-percentage">
-                                                    <span class="text-xs font-weight-bold">10%</span>
+                                        </td>
+                                    </tr>
+
+
+                                    <!-- order Details Modal -->
+                                    <div class="modal fade" id="orderModal{{ $order->id }}" tabindex="-1"
+                                        aria-labelledby="orderModalLabel{{ $order->id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                                            <div class="modal-content shadow-lg rounded-4 border-0">
+
+                                                <!-- Header -->
+                                                <div class="modal-header bg-gradient-dark text-white py-3">
+                                                    <h5 class="modal-title d-flex align-items-center text-white"
+                                                        id="orderModalLabel{{ $order->id }}">
+                                                        <i class="material-symbols-rounded me-2 fs-4">inventory_2</i>
+                                                        Order Details
+                                                    </h5>
+                                                    <button type="button" class="btn-close btn-close-white"
+                                                        data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
-                                            </div>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-gradient-info w-10" role="progressbar"
-                                                    aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div>
-                                                <img src="../assets/img/small-logos/logo-slack.svg"
-                                                    class="avatar avatar-sm me-3" alt="team7">
-                                            </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Fix Platform Errors</h6>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="avatar-group mt-2">
-                                            <a href="javascript:;" class="avatar avatar-xs rounded-circle"
-                                                data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                title="Romina Hadid">
-                                                <img src="../assets/img/team-3.jpg" alt="team8">
-                                            </a>
-                                            <a href="javascript:;" class="avatar avatar-xs rounded-circle"
-                                                data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                title="Jessica Doe">
-                                                <img src="../assets/img/team-1.jpg" alt="team9">
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <td class="align-middle text-center text-sm">
-                                        <span class="text-xs font-weight-bold"> Not set </span>
-                                    </td>
-                                    <td class="align-middle">
-                                        <div class="progress-wrapper w-75 mx-auto">
-                                            <div class="progress-info">
-                                                <div class="progress-percentage">
-                                                    <span class="text-xs font-weight-bold">100%</span>
+
+                                                <!-- Body -->
+                                                <div class="modal-body">
+
+                                                    <!-- Order Info -->
+                                                    <div class="mb-4 p-3 bg-light rounded-3 shadow-sm">
+                                                        <h6 class="text-dark fw-bold mb-3">
+                                                            <i class="material-symbols-rounded me-1">info</i> General
+                                                            Information
+                                                        </h6>
+                                                        <p><strong>Order ID:</strong> #{{ $order->id }}</p>
+                                                        <p><strong>User:</strong> {{ $order->user->name }}</p>
+                                                        <p><strong>Total Amount:</strong> <span
+                                                                class="text-success fw-bold">LKR
+                                                                {{ number_format($order->total_amount, 2) }}</span></p>
+                                                        <p><strong>Delivery Fee:</strong> <span
+                                                                class="text-success fw-bold">LKR
+                                                                {{ number_format($order->delivery_fee, 2) }}</span></p>
+                                                        <p><strong>Status: </strong><span
+                                                                class="badge bg-{{ $statusColor }}">{{ $order->status }}</span>
+                                                        </p>
+                                                    </div>
+
+                                                    <!-- Products Section -->
+                                                    <h6 class="text-secondary fw-bold mb-3">
+                                                        <i class="material-symbols-rounded me-1">shopping_cart</i>
+                                                        Products
+                                                    </h6>
+                                                    <div class="row g-2">
+                                                        <!-- Header Row -->
+                                                        <div
+                                                            class="col-12 d-none d-md-flex bg-light fw-bold rounded-3 p-2 border">
+                                                            <div class="col-md-1">#</div>
+                                                            <div class="col-md-4">Product</div>
+                                                            <div class="col-md-3">Variant SKU</div>
+                                                            <div class="col-md-2">Price</div>
+                                                            <div class="col-md-2">Quantity</div>
+                                                        </div>
+
+                                                        <!-- Items -->
+                                                        @foreach ($order->items as $index => $item)
+                                                            <div
+                                                                class="col-12 d-flex flex-column flex-md-row align-items-start align-items-md-center bg-white rounded-3 shadow-sm p-2 border mb-2">
+                                                                <div class="col-12 col-md-1 fw-bold mb-1 mb-md-0">
+                                                                    {{ $index + 1 }}</div>
+                                                                <div class="col-12 col-md-4">
+                                                                    {{ $item->product['name'] }}
+                                                                </div>
+                                                                <div class="col-12 col-md-3">
+                                                                    {{ $item->variant->sku ?? '-' }}</div>
+                                                                <div class="col-12 col-md-2">
+                                                                    <span class="badge bg-success">LKR
+                                                                        {{ number_format($item->price_at_time, 2) }}</span>
+                                                                </div>
+                                                                <div class="col-12 col-md-2">
+                                                                    <span
+                                                                        class="badge bg-info text-dark">{{ $item->quantity }}</span>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+
+                                                    <!-- Shipping Address -->
+                                                    <div class="mt-4 p-3 bg-light rounded-3 shadow-sm">
+                                                        <h6 class="text-dark fw-bold mb-2">
+                                                            <i class="material-symbols-rounded me-1">location_on</i>
+                                                            Shipping Address
+                                                        </h6>
+                                                        <p><strong>Full Name:</strong> {{ $order->full_name }}</p>
+                                                        <p><strong>Street Address:</strong>
+                                                            {{ $order->street_address }}
+                                                        </p>
+                                                        <p><strong>City:</strong> {{ $order->city }}</p>
+                                                        <p><strong>State:</strong> {{ $order->state ?? '-' }}</p>
+                                                        <p><strong>Zip Code:</strong> {{ $order->zip_code }}</p>
+                                                        <p><strong>Mobile No:</strong> {{ $order->phone }}</p>
+                                                    </div>
+
                                                 </div>
-                                            </div>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-gradient-success w-100" role="progressbar"
-                                                    aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div>
-                                                <img src="../assets/img/small-logos/logo-spotify.svg"
-                                                    class="avatar avatar-sm me-3" alt="spotify">
-                                            </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Launch our Mobile App</h6>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="avatar-group mt-2">
-                                            <a href="javascript:;" class="avatar avatar-xs rounded-circle"
-                                                data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                title="Ryan Tompson">
-                                                <img src="../assets/img/team-4.jpg" alt="user1">
-                                            </a>
-                                            <a href="javascript:;" class="avatar avatar-xs rounded-circle"
-                                                data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                title="Romina Hadid">
-                                                <img src="../assets/img/team-3.jpg" alt="user2">
-                                            </a>
-                                            <a href="javascript:;" class="avatar avatar-xs rounded-circle"
-                                                data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                title="Alexander Smith">
-                                                <img src="../assets/img/team-4.jpg" alt="user3">
-                                            </a>
-                                            <a href="javascript:;" class="avatar avatar-xs rounded-circle"
-                                                data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                title="Jessica Doe">
-                                                <img src="../assets/img/team-1.jpg" alt="user4">
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <td class="align-middle text-center text-sm">
-                                        <span class="text-xs font-weight-bold"> $20,500 </span>
-                                    </td>
-                                    <td class="align-middle">
-                                        <div class="progress-wrapper w-75 mx-auto">
-                                            <div class="progress-info">
-                                                <div class="progress-percentage">
-                                                    <span class="text-xs font-weight-bold">100%</span>
+
+                                                <!-- Footer -->
+                                                <div class="modal-footer bg-light py-3">
+                                                    <button type="button" class="btn btn-outline-secondary"
+                                                        data-bs-dismiss="modal">
+                                                        <i class="material-symbols-rounded me-1">close</i> Close
+                                                    </button>
                                                 </div>
-                                            </div>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-gradient-success w-100" role="progressbar"
-                                                    aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+
                                             </div>
                                         </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div>
-                                                <img src="../assets/img/small-logos/logo-jira.svg"
-                                                    class="avatar avatar-sm me-3" alt="jira">
-                                            </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Add the New Pricing Page</h6>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="avatar-group mt-2">
-                                            <a href="javascript:;" class="avatar avatar-xs rounded-circle"
-                                                data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                title="Ryan Tompson">
-                                                <img src="../assets/img/team-4.jpg" alt="user5">
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <td class="align-middle text-center text-sm">
-                                        <span class="text-xs font-weight-bold"> $500 </span>
-                                    </td>
-                                    <td class="align-middle">
-                                        <div class="progress-wrapper w-75 mx-auto">
-                                            <div class="progress-info">
-                                                <div class="progress-percentage">
-                                                    <span class="text-xs font-weight-bold">25%</span>
-                                                </div>
-                                            </div>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-gradient-info w-25" role="progressbar"
-                                                    aria-valuenow="25" aria-valuemin="0" aria-valuemax="25"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div>
-                                                <img src="../assets/img/small-logos/logo-invision.svg"
-                                                    class="avatar avatar-sm me-3" alt="invision">
-                                            </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">Redesign New Online Shop</h6>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="avatar-group mt-2">
-                                            <a href="javascript:;" class="avatar avatar-xs rounded-circle"
-                                                data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                title="Ryan Tompson">
-                                                <img src="../assets/img/team-1.jpg" alt="user6">
-                                            </a>
-                                            <a href="javascript:;" class="avatar avatar-xs rounded-circle"
-                                                data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                title="Jessica Doe">
-                                                <img src="../assets/img/team-4.jpg" alt="user7">
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <td class="align-middle text-center text-sm">
-                                        <span class="text-xs font-weight-bold"> $2,000 </span>
-                                    </td>
-                                    <td class="align-middle">
-                                        <div class="progress-wrapper w-75 mx-auto">
-                                            <div class="progress-info">
-                                                <div class="progress-percentage">
-                                                    <span class="text-xs font-weight-bold">40%</span>
-                                                </div>
-                                            </div>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-gradient-info w-40" role="progressbar"
-                                                    aria-valuenow="40" aria-valuemin="0" aria-valuemax="40"></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
+                                    </div>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-4 col-md-6">
-            <div class="card h-100">
-                <div class="card-header pb-0">
-                    <h6>Orders overview</h6>
-                    <p class="text-sm">
-                        <i class="fa fa-arrow-up text-success" aria-hidden="true"></i>
-                        <span class="font-weight-bold">24%</span> this month
-                    </p>
-                </div>
-                <div class="card-body p-3">
-                    <div class="timeline timeline-one-side">
-                        <div class="timeline-block mb-3">
-                            <span class="timeline-step">
-                                <i class="material-symbols-rounded text-success text-gradient">notifications</i>
-                            </span>
-                            <div class="timeline-content">
-                                <h6 class="text-dark text-sm font-weight-bold mb-0">$2400, Design changes</h6>
-                                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">22 DEC 7:20 PM</p>
-                            </div>
-                        </div>
-                        <div class="timeline-block mb-3">
-                            <span class="timeline-step">
-                                <i class="material-symbols-rounded text-danger text-gradient">code</i>
-                            </span>
-                            <div class="timeline-content">
-                                <h6 class="text-dark text-sm font-weight-bold mb-0">New order #1832412</h6>
-                                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">21 DEC 11 PM</p>
-                            </div>
-                        </div>
-                        <div class="timeline-block mb-3">
-                            <span class="timeline-step">
-                                <i class="material-symbols-rounded text-info text-gradient">shopping_cart</i>
-                            </span>
-                            <div class="timeline-content">
-                                <h6 class="text-dark text-sm font-weight-bold mb-0">Server payments for April
-                                </h6>
-                                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">21 DEC 9:34 PM</p>
-                            </div>
-                        </div>
-                        <div class="timeline-block mb-3">
-                            <span class="timeline-step">
-                                <i class="material-symbols-rounded text-warning text-gradient">credit_card</i>
-                            </span>
-                            <div class="timeline-content">
-                                <h6 class="text-dark text-sm font-weight-bold mb-0">New card added for order
-                                    #4395133</h6>
-                                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">20 DEC 2:20 AM</p>
-                            </div>
-                        </div>
-                        <div class="timeline-block mb-3">
-                            <span class="timeline-step">
-                                <i class="material-symbols-rounded text-primary text-gradient">key</i>
-                            </span>
-                            <div class="timeline-content">
-                                <h6 class="text-dark text-sm font-weight-bold mb-0">Unlock packages for
-                                    development</h6>
-                                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">18 DEC 4:54 AM</p>
-                            </div>
-                        </div>
-                        <div class="timeline-block">
-                            <span class="timeline-step">
-                                <i class="material-symbols-rounded text-dark text-gradient">payments</i>
-                            </span>
-                            <div class="timeline-content">
-                                <h6 class="text-dark text-sm font-weight-bold mb-0">New order #9583120</h6>
-                                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">17 DEC</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('#orders-table').DataTable({
+            paging: true,
+            searching: true,
+            lengthChange: true,
+            pageLength: 5,
+            lengthMenu: [ [5, 10, 25, 50, 100], [5, 10, 25, 50, 100] ],
+            ordering: false,
+            info: true,
+            responsive: true,
+            dom: '<"row mb-3"<"col-md-6 d-flex align-items-center"l><"col-md-6 d-flex justify-content-end"f>>t<"row mt-3"<"col-md-6"i><"col-md-6 d-flex justify-content-end"p>>',
+            language: {
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ orders",
+                infoEmpty: "No orders available",
+                infoFiltered: "(filtered from _MAX_ total orders)",
+                zeroRecords: "No matching orders found",
+                search: "",
+                searchPlaceholder: "🔍 Search orders...",
+                paginate: {
+                    previous: "←",
+                    next: "→"
+                }
+            }
+        });
+    });
+</script>

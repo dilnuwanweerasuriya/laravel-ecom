@@ -27,7 +27,7 @@
                 <div class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3">
                     <div class="row align-items-center">
                         <div class="col-sm-6">
-                            <h6 class="text-white text-capitalize ps-3 me-3">Categories table</h6>
+                            <h6 class="text-white text-capitalize ps-3 me-3">Categories</h6>
                         </div>
                         <div class="col-sm-6 d-flex justify-content-end">
                             <a href="/admin/categories/create" class="btn btn-primary btn-sm me-3">Add New</a>

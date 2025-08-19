@@ -17,6 +17,7 @@ class ViewController extends DataController
         $data = array(
             'view' => 'backend/dashboard',
             'title' => 'Dashboard',
+            'orders' => $this->getOrders(),
         );
 
         return $this->default($data);
