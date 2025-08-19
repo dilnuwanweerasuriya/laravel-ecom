@@ -120,7 +120,7 @@
                                             <div class="modal-body">
                                                 <!-- Product Info -->
                                                 <div class="mb-4">
-                                                    <h6 class="text-primary fw-bold mb-3"><i
+                                                    <h6 class="text-dark fw-bold mb-3"><i
                                                             class="material-symbols-rounded me-1">info</i> General
                                                         Information</h6>
                                                     <p><strong>Name:</strong> {{ $product->name }}</p>
@@ -147,7 +147,7 @@
                                                 <!-- Variants Section -->
                                                 @if ($product->has_variants == 1)
                                                     <hr class="my-3">
-                                                    <h6 class="text-primary fw-bold mb-3"><i
+                                                    <h6 class="text-dark fw-bold mb-3"><i
                                                             class="material-symbols-rounded me-1">category</i> Variant
                                                         Details</h6>
                                                     <div class="row">

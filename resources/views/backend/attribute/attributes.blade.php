@@ -93,7 +93,7 @@
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content shadow-lg rounded-3 border-0">
                                             <!-- Header -->
-                                            <div class="modal-header bg-gradient-primary text-white">
+                                            <div class="modal-header bg-gradient-dark text-white">
                                                 <h5 class="modal-title d-flex align-items-center text-white"
                                                     id="attributeModalLabel{{ $attribute->id }}">
                                                     <i class="material-symbols-rounded me-2">tune</i>
@@ -107,7 +107,7 @@
                                             <div class="modal-body">
                                                 <!-- Attribute Name -->
                                                 <div class="mb-3">
-                                                    <h6 class="text-primary fw-bold mb-2"><i
+                                                    <h6 class="text-dark fw-bold mb-2"><i
                                                             class="material-symbols-rounded me-1">label</i> Attribute
                                                         Name</h6>
                                                     <p class="fs-6 text-dark">{{ $attribute->name }}</p>
@@ -116,7 +116,7 @@
                                                 <!-- Attribute Values -->
                                                 @if ($attribute->attributeValues->isNotEmpty())
                                                     <hr>
-                                                    <h6 class="text-primary fw-bold mb-2"><i
+                                                    <h6 class="text-dark fw-bold mb-2"><i
                                                             class="material-symbols-rounded me-1">list</i> Attribute
                                                         Values</h6>
                                                     <div class="d-flex flex-wrap gap-2">

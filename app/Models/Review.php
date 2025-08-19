@@ -16,6 +16,7 @@ class Review extends Model
         'product_id',
         'rating',
         'comment',
+        'is_approved',
         'created_at',
     ];
 

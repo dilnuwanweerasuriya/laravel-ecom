@@ -102,7 +102,7 @@
                                         <div class="modal-content shadow-lg rounded-3 border-0">
 
                                             <!-- Modal Header -->
-                                            <div class="modal-header bg-gradient-primary text-white">
+                                            <div class="modal-header bg-gradient-dark text-white">
                                                 <h5 class="modal-title d-flex align-items-center text-white"
                                                     id="categoryModalLabel{{ $category->id }}">
                                                     <i class="material-symbols-rounded me-2">category</i>
@@ -116,21 +116,21 @@
                                             <div class="modal-body">
                                                 <!-- Category Name -->
                                                 <div class="mb-3">
-                                                    <h6 class="text-info fw-bold mb-1"><i
+                                                    <h6 class="text-dark fw-bold mb-1"><i
                                                             class="material-symbols-rounded me-1">label</i> Name</h6>
                                                     <p class="fs-6 text-dark">{{ $category->name }}</p>
                                                 </div>
 
                                                 <!-- Slug -->
                                                 <div class="mb-3">
-                                                    <h6 class="text-info fw-bold mb-1"><i
+                                                    <h6 class="text-dark fw-bold mb-1"><i
                                                             class="material-symbols-rounded me-1">link</i> Slug</h6>
                                                     <p class="text-muted">{{ $category->slug }}</p>
                                                 </div>
 
                                                 <!-- Status -->
                                                 <div>
-                                                    <h6 class="text-info fw-bold mb-1"><i
+                                                    <h6 class="text-dark fw-bold mb-1"><i
                                                             class="material-symbols-rounded me-1">info</i> Status</h6>
                                                     @if ($category->is_active == 1)
                                                         <span class="badge bg-success px-3 py-2">Active</span>

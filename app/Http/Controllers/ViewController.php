@@ -243,4 +243,16 @@ class ViewController extends DataController
 
         return $this->default($data);
     }
+
+    //Reviews Function
+    public function reviews(){
+        $data = array(
+            'view' => 'backend/review/reviews',
+            'title' => 'Reviews',
+            'reviews' => $this->getReviews(),
+        );
+        // dd($data);
+
+        return $this->default($data);
+    }
 }

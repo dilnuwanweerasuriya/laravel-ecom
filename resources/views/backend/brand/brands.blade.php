@@ -104,7 +104,7 @@
                                         <div class="modal-content shadow-lg rounded-3 border-0">
 
                                             <!-- Header -->
-                                            <div class="modal-header bg-gradient-primary text-white">
+                                            <div class="modal-header bg-gradient-dark text-white">
                                                 <h5 class="modal-title d-flex align-items-center text-white"
                                                     id="brandModalLabel{{ $brand->id }}">
                                                     <i class="material-symbols-rounded me-2">branding_watermark</i>
@@ -127,21 +127,21 @@
 
                                                 <!-- Brand Info -->
                                                 <div class="mb-3">
-                                                    <h6 class="text-primary fw-bold mb-2"><i
+                                                    <h6 class="text-dark fw-bold mb-2"><i
                                                             class="material-symbols-rounded me-1">label</i> Brand Name
                                                     </h6>
                                                     <p class="fs-6 text-dark">{{ $brand->name }}</p>
                                                 </div>
 
                                                 <div class="mb-3">
-                                                    <h6 class="text-primary fw-bold mb-2"><i
+                                                    <h6 class="text-dark fw-bold mb-2"><i
                                                             class="material-symbols-rounded me-1">link</i> Slug</h6>
                                                     <p class="text-muted">{{ $brand->slug }}</p>
                                                 </div>
 
                                                 <!-- Status -->
                                                 <div>
-                                                    <h6 class="text-primary fw-bold mb-2"><i
+                                                    <h6 class="text-dark fw-bold mb-2"><i
                                                             class="material-symbols-rounded me-1">info</i> Status</h6>
                                                     @if ($brand->is_active == 1)
                                                         <span class="badge bg-success px-3 py-2">Active</span>

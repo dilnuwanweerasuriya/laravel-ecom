@@ -177,7 +177,7 @@
                     </div>
 
                     <div class="text-end mt-3">
-                        <button type="submit" class="btn bg-gradient-dark">Update Order</button>
+                        <button type="submit" class="btn bg-gradient-dark">Update</button>
                     </div>
                 </form>
             </div>

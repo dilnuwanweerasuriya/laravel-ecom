@@ -21,6 +21,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Address;
 use App\Models\Payment;
+use App\Models\Review;
 
 class ActionController extends Controller
 {
@@ -204,7 +205,7 @@ class ActionController extends Controller
             return response()->json(['success' => true]);
         } catch (\Throwable $e) {
             DB::rollback();
-            return response()->json(['error' => 'Failed to delete user.'], 500);
+            return response()->json(['error' => 'Failed to delete category.'], 500);
         }
     }
 
@@ -303,7 +304,7 @@ class ActionController extends Controller
             return response()->json(['success' => true]);
         } catch (\Throwable $e) {
             DB::rollback();
-            return response()->json(['error' => 'Failed to delete user.'], 500);
+            return response()->json(['error' => 'Failed to delete brand.'], 500);
         }
     }
 
@@ -948,7 +949,56 @@ class ActionController extends Controller
             return response()->json(['success' => true]);
         } catch (\Throwable $e) {
             DB::rollback();dd($e);
-            return response()->json(['error' => 'Failed to delete attribute.'], 500);
+            return response()->json(['error' => 'Failed to delete order.'], 500);
+        }
+    }
+
+    //Review Delete (AJAX)
+    public function reviewDelete($id){
+        try {
+            DB::beginTransaction();
+            $review = Review::where('id', $id)->delete();
+            DB::commit();
+
+            return response()->json(['success' => true]);
+        } catch (\Throwable $e) {
+            DB::rollback();dd($e);
+            return response()->json(['error' => 'Failed to delete review.'], 500);
+        }
+    }
+
+    //Review Approve (AJAX)
+    public function reviewApprove($id){
+        try {
+            DB::beginTransaction();
+            $review = Review::where('id', $id)->first();
+
+            $review->is_approved = 1;
+            $review->save();
+
+            DB::commit();
+
+            return response()->json(['success' => true]);
+        } catch (\Throwable $e) {
+            DB::rollback();dd($e);
+            return response()->json(['error' => 'Failed to approve review.'], 500);
+        }
+    }
+
+    //Review Disapprove (AJAX)
+    public function reviewDisapprove($id){
+        try {
+            DB::beginTransaction();
+            $review = Review::where('id', $id)->first();
+
+            $review->is_approved = 2;
+            $review->save();
+            DB::commit();
+
+            return response()->json(['success' => true]);
+        } catch (\Throwable $e) {
+            DB::rollback();dd($e);
+            return response()->json(['error' => 'Failed to disapprove review.'], 500);
         }
     }
 }

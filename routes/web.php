@@ -107,4 +107,13 @@ Route::group([
 
     Route::post('/admin/orders/delete/{id}', 'ActionController@orderDelete');
 
+    //review
+    Route::get('/admin/reviews', 'ViewController@reviews');
+
+    Route::post('/admin/reviews/delete/{id}', 'ActionController@reviewDelete');
+
+    Route::post('/admin/reviews/approve/{id}', 'ActionController@reviewApprove');
+
+    Route::post('/admin/reviews/disapprove/{id}', 'ActionController@reviewDisapprove');
+
 });

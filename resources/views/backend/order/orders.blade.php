@@ -25,10 +25,6 @@
         transition: all 0.3s ease-in-out;
     }
 
-    .modal-header.bg-gradient-primary {
-        background: linear-gradient(90deg, #0066ff, #00ccff);
-    }
-
     .table td,
     .table th {
         vertical-align: middle;
@@ -146,7 +142,7 @@
                                         <div class="modal-content shadow-lg rounded-4 border-0">
 
                                             <!-- Header -->
-                                            <div class="modal-header bg-gradient-primary text-white py-3">
+                                            <div class="modal-header bg-gradient-dark text-white py-3">
                                                 <h5 class="modal-title d-flex align-items-center text-white"
                                                     id="orderModalLabel{{ $order->id }}">
                                                     <i class="material-symbols-rounded me-2 fs-4">inventory_2</i>
@@ -161,7 +157,7 @@
 
                                                 <!-- Order Info -->
                                                 <div class="mb-4 p-3 bg-light rounded-3 shadow-sm">
-                                                    <h6 class="text-primary fw-bold mb-3">
+                                                    <h6 class="text-dark fw-bold mb-3">
                                                         <i class="material-symbols-rounded me-1">info</i> General
                                                         Information
                                                     </h6>
@@ -217,7 +213,7 @@
 
                                                 <!-- Shipping Address -->
                                                 <div class="mt-4 p-3 bg-light rounded-3 shadow-sm">
-                                                    <h6 class="text-primary fw-bold mb-2">
+                                                    <h6 class="text-dark fw-bold mb-2">
                                                         <i class="material-symbols-rounded me-1">location_on</i>
                                                         Shipping Address
                                                     </h6>

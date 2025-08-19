@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantAttributes;
 use App\Models\Order;
+use App\Models\Review;
 
 class DataController extends Controller
 {
@@ -94,5 +95,11 @@ class DataController extends Controller
                 ->orderBy('orders.created_at','desc')
                 ->first();
         return $order;
+    }
+
+    //Get Reviews
+    public function getReviews(){
+        $reviews = Review::with('user', 'product.variants')->orderBy('reviews.created_at', 'desc')->get();
+        return $reviews;
     }
 }

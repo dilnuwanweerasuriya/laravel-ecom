@@ -29,9 +29,6 @@
                         <div class="col-sm-6">
                             <h6 class="text-white text-capitalize ps-3 me-3">Stock table</h6>
                         </div>
-                        <div class="col-sm-6 d-flex justify-content-end">
-                            {{-- <a href="/admin/stock/edit" class="btn btn-primary btn-sm me-3">Add Stock</a> --}}
-                        </div>
                     </div>
                 </div>
             </div>
@@ -98,7 +95,7 @@
                                             <div class="modal-body">
                                                 <!-- Product Info -->
                                                 <div class="mb-4">
-                                                    <h6 class="text-primary fw-bold mb-3"><i
+                                                    <h6 class="text-dark fw-bold mb-3"><i
                                                             class="material-symbols-rounded me-1">info</i> General
                                                         Information</h6>
                                                     <p><strong>Product:</strong> {{ $product->name }}</p>
@@ -109,7 +106,7 @@
 
                                                 @if ($product->has_variants == 1)
                                                     <hr class="my-3">
-                                                    <h6 class="text-primary fw-bold mb-3"><i
+                                                    <h6 class="text-dark fw-bold mb-3"><i
                                                             class="material-symbols-rounded me-1">category</i> Variant
                                                         Details</h6>
 
@@ -159,7 +156,7 @@
                                                     data-bs-dismiss="modal">
                                                     <i class="material-symbols-rounded me-1">close</i> Close
                                                 </button>
-                                                <button type="button" class="btn btn-primary save-stock-btn"
+                                                <button type="button" class="btn btn-dark save-stock-btn"
                                                     data-product-id="{{ $product->id }}">
                                                     <i class="material-symbols-rounded me-1">save</i> Save Changes
                                                 </button>

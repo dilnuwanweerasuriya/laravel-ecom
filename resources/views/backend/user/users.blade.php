@@ -101,7 +101,7 @@
                                         <div class="modal-content shadow-lg rounded-3 border-0">
 
                                             <!-- Modal Header -->
-                                            <div class="modal-header bg-gradient-primary text-white">
+                                            <div class="modal-header bg-gradient-dark text-white">
                                                 <h5 class="modal-title d-flex align-items-center text-white"
                                                     id="userModalLabel{{ $user->id }}">
                                                     <i class="material-symbols-rounded me-2">person</i>
@@ -114,31 +114,31 @@
                                             <!-- Modal Body -->
                                             <div class="modal-body">
                                                 <div class="mb-3">
-                                                    <h6 class="text-primary fw-bold mb-1"><i
+                                                    <h6 class="text-dark fw-bold mb-1"><i
                                                             class="material-symbols-rounded me-1">badge</i> Name</h6>
                                                     <p class="text-dark">{{ $user->name }}</p>
                                                 </div>
 
                                                 <div class="mb-3">
-                                                    <h6 class="text-primary fw-bold mb-1"><i
+                                                    <h6 class="text-dark fw-bold mb-1"><i
                                                             class="material-symbols-rounded me-1">email</i> Email</h6>
                                                     <p class="text-muted">{{ $user->email }}</p>
                                                 </div>
 
                                                 <div class="mb-3">
-                                                    <h6 class="text-primary fw-bold mb-1"><i
+                                                    <h6 class="text-dark fw-bold mb-1"><i
                                                             class="material-symbols-rounded me-1">call</i> Phone</h6>
                                                     <p class="text-muted">{{ $user->phone }}</p>
                                                 </div>
 
                                                 <div class="mb-3">
-                                                    <h6 class="text-primary fw-bold mb-1"><i
+                                                    <h6 class="text-dark fw-bold mb-1"><i
                                                             class="material-symbols-rounded me-1">home</i> Address</h6>
                                                     <p class="text-muted">{{ $user->address }}</p>
                                                 </div>
 
                                                 <div>
-                                                    <h6 class="text-primary fw-bold mb-1"><i
+                                                    <h6 class="text-dark fw-bold mb-1"><i
                                                             class="material-symbols-rounded me-1">security</i> Role</h6>
                                                     @php
                                                         $roleClass = match ($user->role) {

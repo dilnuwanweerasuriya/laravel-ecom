@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
             $table->tinyInteger('rating');
             $table->text('comment')->nullable();
+            $table->tinyInteger('is_approved')->default(0);
             $table->timestamp('created_at')->useCurrent();
         });
     }
