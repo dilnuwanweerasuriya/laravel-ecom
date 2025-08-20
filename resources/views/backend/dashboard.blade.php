@@ -46,7 +46,7 @@
                     <div class="d-flex justify-content-between">
                         <div class="mb-4">
                             <p class="text-sm mb-0 text-capitalize">New Orders</p>
-                            <h4 class="mt-2">$53k</h4>
+                            <h4 class="mt-2">{{ $counts['new_orders'] }}</h4>
                         </div>
                         <div
                             class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
@@ -62,7 +62,7 @@
                     <div class="d-flex justify-content-between">
                         <div class="mb-4">
                             <p class="text-sm mb-0 text-capitalize">Order Processing</p>
-                            <h4 class="mt-2">2300</h4>
+                            <h4 class="mt-2">{{ $counts['processing_orders'] }}</h4>
                         </div>
                         <div
                             class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
@@ -78,7 +78,7 @@
                     <div class="d-flex justify-content-between">
                         <div class="mb-4">
                             <p class="text-sm mb-0 text-capitalize">Order Shipped</p>
-                            <h4 class="mt-2">3,462</h4>
+                            <h4 class="mt-2">{{ $counts['shipped_orders'] }}</h4>
                         </div class="mb-4">
                         <div
                             class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
@@ -94,7 +94,7 @@
                     <div class="d-flex justify-content-between">
                         <div class="mb-4">
                             <p class="text-sm mb-0 text-capitalize">Average Price</p>
-                            <h4 class="mt-2">$103,430</h4>
+                            <h4 class="mt-2">LKR {{ $counts['average_price'] }}</h4>
                         </div>
                         <div
                             class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
@@ -317,6 +317,7 @@
             lengthMenu: [ [5, 10, 25, 50, 100], [5, 10, 25, 50, 100] ],
             ordering: false,
             info: true,
+            scrollY: false,
             responsive: true,
             dom: '<"row mb-3"<"col-md-6 d-flex align-items-center"l><"col-md-6 d-flex justify-content-end"f>>t<"row mt-3"<"col-md-6"i><"col-md-6 d-flex justify-content-end"p>>',
             language: {

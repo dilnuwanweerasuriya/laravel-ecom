@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 use App\Models\User;
 use App\Models\Category;
 use App\Models\Brand;
@@ -16,6 +18,18 @@ use App\Models\Review;
 
 class DataController extends Controller
 {
+    //Get Dashboard Counts
+    public function getDashboardCounts(){
+        $data = [
+            'new_orders' => Order::where('status', 'pending')->count(),
+            'processing_orders' => Order::whereIn('status', ['pending','paid'])->count(),
+            'shipped_orders' => Order::where('status', 'shipped')->count(),
+            'average_price' => number_format(Order::where('status', '!=', 'cancelled')->avg('total_amount'), 2),
+        ];
+
+        return $data;
+    }
+
     //Get Users
     public function getUsers(){
         $users = User::get();
@@ -25,6 +39,12 @@ class DataController extends Controller
     //Get User Data
     public function getUserData($id){
         $user = User::where('id', $id)->first();
+        return $user;
+    }
+
+    //Get Auth User Data
+    public function getAuthUserData(){
+        $user = User::find(Auth::id());
         return $user;
     }
 

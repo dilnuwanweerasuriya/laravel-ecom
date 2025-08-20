@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\View;
 
 class ViewController extends DataController
 {
+    //Login Function
+    public function login(){
+        return View::make('backend/login');
+    }
+
     //Default Function
     public function default($data){
         return View::make('backend/layout', $data);
@@ -18,6 +23,7 @@ class ViewController extends DataController
             'view' => 'backend/dashboard',
             'title' => 'Dashboard',
             'orders' => $this->getOrders(),
+            'counts' => $this->getDashboardCounts(),
         );
 
         return $this->default($data);
@@ -50,6 +56,17 @@ class ViewController extends DataController
             'view' => 'backend/user/userEdit',
             'title' => 'Edit User',
             'user' => $this->getUserData($id),
+        );
+
+        return $this->default($data);
+    }
+
+    //User Profile
+    public function profile(){
+        $data = array(
+            'view' => 'backend/profile',
+            'title' => 'Profile',
+            'user' => $this->getAuthUserData(),
         );
 
         return $this->default($data);

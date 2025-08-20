@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Material Dashboard</title>
+    <title>E-Com Admin Panel</title>
 
     <!-- Favicon & Icons -->
     <link rel="apple-touch-icon" sizes="76x76" href="/../assets/img/apple-icon.png">
@@ -47,9 +47,9 @@
     <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2 bg-white my-2" id="sidenav-main">
         <div class="sidenav-header">
             <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-            <a class="navbar-brand px-4 py-3 m-0" href="https://demos.creative-tim.com/material-dashboard/pages/dashboard" target="_blank">
-                <img src="/../assets/img/logo-ct-dark.png" class="navbar-brand-img" width="26" height="26" alt="main_logo">
-                <span class="ms-1 text-sm text-dark">Creative Tim</span>
+            <a class="navbar-brand px-4 py-3 m-0" href="/admin/dashboard" target="_blank">
+                <img src="https://dummyimage.com/120x120/007bff/fff&text={{ Auth::user()->name }}" class="navbar-brand-img" width="26" height="26" alt="main_logo">
+                <span class="ms-1 text-sm text-dark">{{ Auth::user()->name }}</span>
             </a>
         </div>
         <hr class="horizontal dark mt-0 mb-2">
@@ -96,9 +96,9 @@
                                 <i class="material-symbols-rounded">account_circle</i>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="/user-profile">Profile</a></li>
+                                <li><a class="dropdown-item" href="/admin/profile">Profile</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="/user-logout">Logout</a></li>
+                                <li><a class="dropdown-item" href="/admin/logout">Logout</a></li>
                             </ul>
                         </li>
                     </ul>

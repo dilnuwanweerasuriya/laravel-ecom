@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -25,6 +26,66 @@ use App\Models\Review;
 
 class ActionController extends Controller
 {
+    //Update Auth User Data
+    public function updateAuthData(Request $request){
+        try {
+            $validated = $request->validate([
+                'name' => 'required',
+                'phone' => 'required',
+            ]);
+
+            DB::beginTransaction();
+
+            $user = User::find(Auth::id());
+
+            $user->name = $request->name;
+            $user->phone = $request->phone;
+            $user->save();
+
+            DB::commit();
+
+            toastr()->success('Profile updated successfully.');
+            return redirect('/admin/profile');
+
+        } catch (\Throwable $e) {
+            DB::rollback();dd($e);
+            toastr()->error('Data update failed. Please try again.');
+            return redirect()->back();
+        }
+    }
+
+    //Update Auth User Password
+    public function changePassword(Request $request){
+        try {
+            $validated = $request->validate([
+                'old_password' => 'required',
+                'new_password' => 'required|min:6',
+            ]);
+
+            DB::beginTransaction();
+
+            $user = User::find(Auth::id());
+
+            if (!Hash::check($request->old_password, $user->password)) {
+                toastr()->error('Old password is incorrect.');
+                return redirect()->back();
+            }
+
+            $user->password = bcrypt($request->new_password);
+            $user->save();
+
+            DB::commit();
+
+            toastr()->success('Password updated successfully.');
+            return redirect('/admin/profile');
+
+        } catch (\Throwable $e) {
+            DB::rollback();dd($e);
+            toastr()->error('Password update failed. Please try again.');
+            return redirect()->back();
+        }
+    }
+
     //Register User
     public function userRegister(Request $request){
         try {

@@ -15,12 +15,38 @@ use App\Livewire\Backend\Login;
 */
 Route::group([
 
-    // 'middleware' => 'authroute',
     'namespace'  => 'App\Http\Controllers',
 
 ],function ($router) {
 
-    Route::get('/admin/dashboard', 'ViewController@dashboard');
+    //Admin Panel login
+    Route::get('/admin/login', 'ViewController@login')->name('admin.login');
+
+    //Admin Panel login check
+    Route::post('/admin/adminLogin', 'AuthController@adminLogin');
+
+    //Admin Panel logout
+    Route::get('/admin/logout', 'AuthController@adminLogout');
+
+});
+
+Route::group([
+
+    'middleware' => 'admin',
+    'namespace'  => 'App\Http\Controllers',
+
+],function ($router) {
+
+    //dashboard
+    Route::get('/admin/dashboard', 'ViewController@dashboard')->name('admin.dashboard');
+
+    //Profile
+    Route::get('/admin/profile', 'ViewController@profile')->name('admin.profile');
+
+    //Auth User Data Update
+    Route::post('/admin/updateAuthData', 'ActionController@updateAuthData');
+
+    Route::post('/admin/changePassword', 'ActionController@changePassword');
 
     //user
     Route::get('/admin/users', 'ViewController@users');
