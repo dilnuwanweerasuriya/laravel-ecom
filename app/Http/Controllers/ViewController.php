@@ -13,7 +13,7 @@ class ViewController extends DataController
     }
 
     //Default Function
-    public function default($data){
+    public function defaultBackend($data){
         return View::make('backend/layout', $data);
     }
 
@@ -26,7 +26,7 @@ class ViewController extends DataController
             'counts' => $this->getDashboardCounts(),
         );
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //Users Function
@@ -37,7 +37,7 @@ class ViewController extends DataController
             'users' => $this->getUsers(),
         );
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //User Create Function
@@ -47,7 +47,7 @@ class ViewController extends DataController
             'title' => 'Create User'
         );
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //User Edit Function
@@ -58,7 +58,7 @@ class ViewController extends DataController
             'user' => $this->getUserData($id),
         );
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //User Profile
@@ -69,7 +69,7 @@ class ViewController extends DataController
             'user' => $this->getAuthUserData(),
         );
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //Categories Function
@@ -80,7 +80,7 @@ class ViewController extends DataController
             'categories' => $this->getCategories(),
         );
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //Category Create Function
@@ -91,7 +91,7 @@ class ViewController extends DataController
             'categories' => $this->getCategories(),
         );
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //Category Edit Function
@@ -103,7 +103,7 @@ class ViewController extends DataController
             'categories' => $this->getCategories(),
         );
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //Brands Function
@@ -114,7 +114,7 @@ class ViewController extends DataController
             'brands' => $this->getBrands(),
         );
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //Brand Create Function
@@ -125,7 +125,7 @@ class ViewController extends DataController
             'brands' => $this->getBrands(),
         );
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //Brand Edit Function
@@ -136,7 +136,7 @@ class ViewController extends DataController
             'brand' => $this->getBrandData($id),
         );
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //Attributes Function
@@ -147,7 +147,7 @@ class ViewController extends DataController
             'attributes' => $this->getAttributes(),
         );
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //Attribute Create Function
@@ -158,7 +158,7 @@ class ViewController extends DataController
             'attributes' => $this->getAttributes(),
         );
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //Attribute Edit Function
@@ -169,7 +169,7 @@ class ViewController extends DataController
             'attribute' => $this->getAttributeData($id),
         );
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //Products Function
@@ -180,7 +180,7 @@ class ViewController extends DataController
             'products' => $this->getProducts(),
         );
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //Product Create Function
@@ -194,7 +194,7 @@ class ViewController extends DataController
             'brands' => $this->getBrands(),
         );
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //Product Edit Function
@@ -209,7 +209,7 @@ class ViewController extends DataController
         );
         // dd($data);
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //Stocks Function
@@ -220,7 +220,7 @@ class ViewController extends DataController
             'products' => $this->getProducts(),
         );
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
 
@@ -233,7 +233,7 @@ class ViewController extends DataController
         );
         // dd($data);
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //Order Create Function
@@ -245,7 +245,7 @@ class ViewController extends DataController
             'users' => $this->getUsers(),
         );
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //Order Edit Function
@@ -259,7 +259,7 @@ class ViewController extends DataController
         );
         // dd($data);
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 
     //Reviews Function
@@ -271,6 +271,6 @@ class ViewController extends DataController
         );
         // dd($data);
 
-        return $this->default($data);
+        return $this->defaultBackend($data);
     }
 }
