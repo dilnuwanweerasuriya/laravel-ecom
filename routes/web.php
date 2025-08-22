@@ -1,7 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Livewire\Backend\Login;
+
+use App\Livewire\HomePage;
+use App\Livewire\ProductsPage;
+use App\Livewire\CartPage;
+use App\Livewire\AboutPage;
+use App\Livewire\ContactPage;
+use App\Livewire\CheckoutPage;
+use App\Livewire\SuccessPage;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +35,12 @@ Route::group([
 
     //Admin Panel logout
     Route::get('/admin/logout', 'AuthController@adminLogout');
+
+    // //Landing Page
+    // Route::get('/', 'ViewController@home');
+
+    // //Shop Page
+    // Route::get('/shop', 'ViewController@shop');
 
 });
 
@@ -143,3 +157,18 @@ Route::group([
     Route::post('/admin/reviews/disapprove/{id}', 'ActionController@reviewDisapprove');
 
 });
+
+
+Route::get('/', HomePage::class);
+
+Route::get('/products', ProductsPage::class);
+
+Route::get('/cart', CartPage::class);
+
+Route::get('/about', AboutPage::class);
+
+Route::get('/contact', ContactPage::class);
+
+Route::get('/checkout', CheckoutPage::class);
+
+Route::get('/success-order', SuccessPage::class);

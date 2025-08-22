@@ -273,4 +273,48 @@ class ViewController extends DataController
 
         return $this->defaultBackend($data);
     }
+
+    //------------------------ Fronyend ---------------------------//
+    //Default Function
+    // public function defaultFrontend($data){
+    //     return View::make('frontend/app', $data);
+    // }
+
+    // //Home Function (Landing Page)
+    // public function home(){
+    //     $data = [
+    //         'title' => 'Home',
+    //         'view' => 'frontend/home',
+    //         'css' => [
+    //                 '/assets/css/plugins/jquery.countdown.css',
+    //                 '/assets/css/skins/skin-demo-3.css',
+    //                 '/assets/css/demos/demo-3.css'
+    //             ],
+    //         'script' => [
+    //             '/assets/js/jquery.plugin.min.js',
+    //             '/assets/js/jquery.countdown.min.js',
+    //             '/assets/js/demos/demo-3.js'
+    //         ],
+    //         'brands' => $this->getBrands(),
+    //     ];
+
+    //     return $this->defaultFrontend($data);
+    // }
+
+    // //Shop Function
+    // public function shop(){
+    //     $data = [
+    //         'title' => 'Shop',
+    //         'view' => 'frontend/shop',
+    //         'css'=> [
+    //                 '/assets/css/plugins/nouislider/nouislider.css'
+    //             ],
+    //         'script' => [
+    //             '/assets/js/wNumb.js',
+    //             '/assets/js/nouislider.min.js'
+    //         ]
+    //     ];
+
+    //     return $this->defaultFrontend($data);
+    // }
 }

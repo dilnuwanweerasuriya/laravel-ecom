@@ -62,7 +62,7 @@
                                     </td>
                                     <td class="text-center">
                                         @if ($brand->image)
-                                            <img src="{{ asset($brand->image) }}" alt="Brand Image"
+                                            <img src="{{ asset($brand->image) }}" alt="{{ $brand->name }}"
                                                 style="height: 40px;">
                                         @endif
                                     </td>
