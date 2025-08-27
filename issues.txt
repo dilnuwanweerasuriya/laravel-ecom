@@ -1,0 +1,8 @@
+backend
+
+- each product must have a slug. sku is different.
+- short description for product card (1/2 sentences)
+- featured products
+- top selling products
+- new arrivals
+- optional - banners

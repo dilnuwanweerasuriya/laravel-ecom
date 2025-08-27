@@ -6,7 +6,10 @@ use Livewire\Component;
 use Livewire\Attributes\Title;
 use Livewire\withPagination;
 use Livewire\Attributes\Url;
+use Jantinnerezo\LivewireAlert\Facades\LivewireAlert;
 
+use App\Helpers\CartManagement;
+use App\Livewire\Partials\Navigation;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
@@ -26,10 +29,23 @@ class ProductsPage extends Component
     public $price_start = 0;
 
     #[Url]
-    public $price_end = 10000;
+    public $price_end = 300000;
 
     #[Url]
     public $sort = 'latest';
+
+    //add product to cart method
+    public function addToCart($product_id){
+        $total_count = CartManagement::addItemToCart($product_id);
+
+        $this->dispatch('update-cart-count', total_count: $total_count)->to(Navigation::class);
+
+        LivewireAlert::title('Product added to the cart successfully!')
+            ->success()
+            ->toast()
+            ->position('bottom-end')
+            ->show();
+    }
 
     public function render()
     {
@@ -55,6 +71,10 @@ class ProductsPage extends Component
                     });
                 });
             });
+        }
+
+        if($this->sort == 'featured'){
+            $products->where('is_featured', 1);
         }
 
         if($this->sort == 'latest'){

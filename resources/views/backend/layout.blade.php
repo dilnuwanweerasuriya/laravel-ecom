@@ -40,6 +40,7 @@
     <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.tiny.cloud/1/r1u455lgw7tm4t7zed9mcah3xqpdy3l9alzacskr0s4627aj/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 </head>
 
 <body class="d-flex flex-column min-vh-100 g-sidenav-show bg-gray-100">

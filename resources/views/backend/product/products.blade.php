@@ -5,7 +5,7 @@
         border: 1px solid #ccc;
     }
 
-    #products-table_filter{
+    #products-table_filter {
         padding-right: 20px;
     }
 
@@ -41,9 +41,10 @@
                         <thead>
                             <tr>
                                 <th class="text-center">Name</th>
-                                <th class="text-center">Description</th>
+                                <th class="text-center">Short Description</th>
                                 <th class="text-center">Product Type</th>
                                 <th class="text-center">Primary Image</th>
+                                <th class="text-center">Is Featured</th>
                                 <th class="text-center">Actions</th>
                             </tr>
                         </thead>
@@ -59,7 +60,7 @@
                                     </td>
                                     <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0 text-capitalize">
-                                            {{ $product->description }}</p>
+                                            {{ $product->short_description }}</p>
                                     </td>
                                     <td class="text-center">
                                         <p class="text-xs font-weight-bold mb-0 text-capitalize">
@@ -75,6 +76,14 @@
                                                 @endif
                                             @endforeach
                                         @endif
+                                    </td>
+                                    <td class="text-center">
+                                        @if ($product->is_featured == 1)
+                                            <i class="material-symbols-rounded text-success opacity-5">check</i>
+                                        @else
+                                        <i class="material-symbols-rounded text-danger opacity-5">close</i>
+                                        @endif
+
                                     </td>
                                     <td class="align-middle text-center">
                                         <!-- Edit -->
@@ -143,6 +152,10 @@
                                                         @endforeach
                                                     @endif
                                                 </div>
+
+                                                @if ($product->is_featured == 1)
+                                                    <span class="badge bg-primary">Featured</span>
+                                                @endif
 
                                                 <!-- Variants Section -->
                                                 @if ($product->has_variants == 1)

@@ -19,16 +19,28 @@
 
                     <div class="row">
                         <!-- Product Name -->
-                        <div class="mb-3">
+                        <div class="col-md-6 mb-3">
                             <label class="form-label">Product Name</label>
                             <input type="text" id="productName" name="name" class="form-control"
                                 value="{{ old('name', $product->name) }}" required>
                         </div>
 
-                        <!-- Description -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Product Slug</label>
+                            <input type="text" id="slug" name="slug" class="form-control"
+                                value="{{ old('slug', $product->slug) }}" required readonly>
+                        </div>
+
+                        <!-- Short Description -->
                         <div class="mb-3">
-                            <label class="form-label">Description</label>
-                            <textarea name="description" class="form-control">{{ old('description', $product->description) }}</textarea>
+                            <label class="form-label">Short Description (1-2 sentences)</label>
+                            <textarea name="short_description" class="form-control">{{ old('short_description', $product->short_description) }}</textarea>
+                        </div>
+
+                        <!-- Long Description -->
+                        <div class="mb-3">
+                            <label class="form-label">Long Description</label>
+                            <textarea name="description" id="myeditorinstance" class="form-control">{{ old('description', $product->description) }}</textarea>
                         </div>
 
                         <!-- Existing Product Images -->
@@ -81,7 +93,7 @@
                         <!-- Brand -->
                         <div class="col-6 mb-3">
                             <label class="form-label">Brand</label>
-                            <select name="brand_id" class="form-select" required>
+                            <select name="brand_id" id="brandSelect" class="form-select" required>
                                 <option value="">Select Brand</option>
                                 @foreach ($brands as $brand)
                                     <option value="{{ $brand->id }}"
@@ -182,7 +194,8 @@
                                                 class="btn btn-secondary btn-sm addAttributeBtn">Add Attribute</button>
                                         </div>
 
-                                        <input type="hidden" name="variants[{{ $vIndex }}][variant_id]" value="{{ $variant->id }}">
+                                        <input type="hidden" name="variants[{{ $vIndex }}][variant_id]"
+                                            value="{{ $variant->id }}">
                                         <div class="row">
                                             <div class="col-6 mt-2">
                                                 <label>Price</label>
@@ -246,6 +259,19 @@
                             <button type="button" id="addVariantBtn" class="btn btn-primary btn-sm mt-2">Add
                                 Variant</button>
                         </div>
+
+                        <hr>
+
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Is Featured?</label>
+                            <select name="is_featured" class="form-select" required>
+                                <option value="1" {{ $product->is_featured == 1 ? 'selected' : '' }}>
+                                    Yes</option>
+                                <option value="0" {{ $product->is_featured == 0 ? 'selected' : '' }}>
+                                    No</option>
+                            </select>
+                        </div>
+
                     </div>
 
                     <div class="text-end">
@@ -260,6 +286,40 @@
 <script>
     const attributes = @json($attributes);
     let variantIndex = {{ count($product->variants) }};
+    let variantCounter = {};
+
+    //formatting
+    tinymce.init({
+        selector: 'textarea[name="description"]',
+        height: 500,
+        plugins: 'advlist autolink lists link image charmap preview anchor pagebreak ' +
+            'searchreplace wordcount visualblocks visualchars code fullscreen ' +
+            'insertdatetime media table emoticons help',
+        toolbar: 'undo redo | styles | bold italic underline strikethrough | ' +
+            'alignleft aligncenter alignright alignjustify | ' +
+            'bullist numlist outdent indent | link image media table | ' +
+            'forecolor backcolor emoticons | removeformat | code | help',
+        menubar: 'file edit view insert format tools table help',
+        branding: false,
+        image_advtab: true,
+        automatic_uploads: true,
+        images_upload_url: '/upload-image', // optional backend handler
+        file_picker_types: 'image',
+        content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }"
+    });
+
+    //slug generator
+    $('#productName').on('input', function() {
+        const product = $(this).val();
+        const slug = product
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-');
+
+        $('#slug').val(slug);
+    });
 
     // ------------------------------
     // SKU GENERATOR & UTILITIES
@@ -271,12 +331,57 @@
             .replace(/\-\-+/g, '-');
     }
 
-    function generateSku(productName, attrValues = []) {
-        let sku = slugify(productName);
-        if (attrValues.length) {
-            sku += '-' + attrValues.map(v => slugify(v)).join('-');
+    // function generateSku(productName, attrValues = []) {
+    //     let sku = slugify(productName);
+    //     if (attrValues.length) {
+    //         sku += '-' + attrValues.map(v => slugify(v)).join('-');
+    //     }
+    //     return sku;
+    // }
+
+    function generateSku(brand, productName, attrValues = []) {
+        const brandSlug = slugify(brand);
+
+        // Generate product code
+        const productParts = productName.toLowerCase().split(/\s+/);
+        let productCode = '';
+
+        const numberPart = productParts.find(p => /\d+/.test(p));
+        if (numberPart) {
+            // Has a number → first letter + number
+            productCode = productParts[0][0] + numberPart.replace(/\D/g, '');
+        } else {
+            // No number → take first letters of first two words
+            productCode = productParts.slice(0, 2).map(word => word[0]).join('');
         }
-        return sku;
+
+        // If no attributes → return brand-productCode
+        if (!attrValues.length) {
+            const key = `${brandSlug}-${productCode}`;
+            if (!variantCounter[key]) {
+                variantCounter[key] = 1;
+            } else {
+                variantCounter[key]++;
+            }
+            const seqNumber = variantCounter[key].toString().padStart(3, '0');
+            return `${brandSlug}-${productCode}-${seqNumber}`;
+        }
+
+        // First attribute = color → initials
+        const color = attrValues[0] || '';
+        const colorCode = color.toLowerCase().split(/\s+/).map(w => w[0]).join('');
+
+        // Create sequence key for brand-product-color
+        const key = `${brandSlug}-${productCode}-${colorCode}`;
+        if (!variantCounter[key]) {
+            variantCounter[key] = 1;
+        } else {
+            variantCounter[key]++;
+        }
+
+        const seqNumber = variantCounter[key].toString().padStart(3, '0');
+
+        return `${brandSlug}-${productCode}-${colorCode}-${seqNumber}`;
     }
 
     // ------------------------------
@@ -290,10 +395,13 @@
 
     // Update SKU for simple product
     document.getElementById('productName').addEventListener('input', updateProductSku);
+    document.getElementById('brandName')?.addEventListener('input', updateProductSku);
 
     function updateProductSku() {
         if (document.getElementById('productType').value === 'simple') {
-            document.getElementById('skuField').value = generateSku(document.getElementById('productName').value);
+            const brand = document.getElementById('brandSelect').selectedOptions[0]?.text || '';
+            document.getElementById('skuField').value =
+                generateSku(brand, document.getElementById('productName').value);
         }
     }
 
@@ -475,16 +583,30 @@
     }
 
     function updateAllVariantSkus() {
+        variantCounter = {}; // Reset counters for fresh sequencing
+        const brand = document.getElementById('brandSelect').selectedOptions[0]?.text || '';
+        const productName = document.getElementById('productName').value;
+
         document.querySelectorAll('.variant-card').forEach(card => {
-            let skuField = card.querySelector('.variant-sku');
+            const skuField = card.querySelector('.variant-sku');
             if (skuField) {
-                let values = [...card.querySelectorAll('.value-select')]
+                const values = [...card.querySelectorAll('.value-select')]
                     .map(s => s.value)
                     .filter(v => v);
-                skuField.value = generateSku(document.getElementById('productName').value, values);
+                skuField.value = generateSku(brand, productName, values);
             }
         });
     }
+
+    // Trigger variant SKU update when product name, brand, or attributes change
+    document.getElementById('productName').addEventListener('input', updateAllVariantSkus);
+    document.getElementById('brandName')?.addEventListener('input', updateAllVariantSkus);
+
+    document.getElementById('variantsContainer').addEventListener('change', function(e) {
+        if (e.target.classList.contains('attr-select') || e.target.classList.contains('value-select')) {
+            updateAllVariantSkus();
+        }
+    });
 
     // ------------------------------
     // IMAGE MANAGEMENT

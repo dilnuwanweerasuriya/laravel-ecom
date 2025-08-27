@@ -71,11 +71,12 @@
                                 class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <option value="latest">Latest</option>
                                 <option value="price">Price</option>
+                                <option value="featured">Featured</option>
                             </select>
                         </div>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <span class="text-gray-700">Showing 1-12 of 48 products</span>
+                        Showing {{ $products->firstItem() }}-{{ $products->lastItem() }} of {{ $products->total() }} products
                     </div>
                 </div>
 
@@ -87,8 +88,10 @@
                             <div class="relative">
                                 @foreach ($product->images as $image)
                                     @if ($image->is_primary == 1)
-                                        <img src="{{ asset($image->image_url) }}" alt="Product 1"
-                                            class="w-full h-64 object-cover">
+                                        <a href="/products/{{ $product->slug }}">
+                                            <img src="{{ asset($image->image_url) }}" alt="{{ $product->name }}"
+                                                class="w-full h-64 object-cover">
+                                        </a>
                                     @endif
                                 @endforeach
                                 {{-- <span
@@ -103,34 +106,55 @@
                                 </div>
                             </div>
                             <div class="p-4">
-                                <h3 class="font-semibold text-gray-800">{{ $product->name }}</h3>
-                                <p class="text-gray-600 text-sm mt-2">Wireless noise-cancelling headphones with 30-hour
-                                    battery life</p>
-                                <div class="flex items-center mt-2">
-                                    <div class="flex text-yellow-400">
-                                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                            <path
-                                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                                        </svg>
-                                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                            <path
-                                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                                        </svg>
-                                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                            <path
-                                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                                        </svg>
-                                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                            <path
-                                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                                        </svg>
-                                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                            <path
-                                                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                                        </svg>
+                                <a href="/products/{{ $product->slug }}">
+                                    <h3 class="font-semibold text-gray-800">{{ $product->name }}</h3>
+                                </a>
+                                <p class="text-gray-600 text-sm mt-2">{{ $product->short_description }}</p>
+                                @if ($product->reviews)
+                                    <div class="flex items-center mt-2">
+                                        @php
+                                            $avgRating = $product->reviews->where('is_approved', 1)->avg('rating') ?? 0;
+                                            $fullStars = floor($avgRating);
+                                            $halfStar = $avgRating - $fullStars >= 0.5 ? 1 : 0;
+                                            $emptyStars = 5 - ($fullStars + $halfStar);
+                                        @endphp
+
+                                        <div class="flex text-yellow-400">
+                                            {{-- Full Stars --}}
+                                            @for ($i = 0; $i < $fullStars; $i++)
+                                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                                    <path
+                                                        d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                                                </svg>
+                                            @endfor
+
+                                            {{-- Half Star --}}
+                                            @if ($halfStar)
+                                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                                    <defs>
+                                                        <linearGradient id="half">
+                                                            <stop offset="50%" stop-color="currentColor" />
+                                                            <stop offset="50%" stop-color="transparent" />
+                                                        </linearGradient>
+                                                    </defs>
+                                                    <path fill="url(#half)"
+                                                        d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                                                </svg>
+                                            @endif
+
+                                            {{-- Empty Stars --}}
+                                            @for ($i = 0; $i < $emptyStars; $i++)
+                                                <svg class="w-4 h-4 text-gray-300" viewBox="0 0 20 20">
+                                                    <path
+                                                        d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                                                </svg>
+                                            @endfor
+                                        </div>
+
+                                        <span
+                                            class="text-gray-600 text-sm ml-2">({{ number_format($avgRating, 1) }})</span>
                                     </div>
-                                    <span class="text-gray-600 text-sm ml-2">(4.5)</span>
-                                </div>
+                                @endif
                                 <div class="mt-4 flex items-center justify-between">
                                     <div class="flex items-center space-x-2">
                                         @if ($product->has_variants)
@@ -157,9 +181,10 @@
                                             Select Options
                                         </a>
                                     @else
-                                        <button
+                                        <button wire:click.prevent="addToCart({{ $product->id }})"
                                             class="bg-indigo-600 text-white px-3 py-1 rounded text-sm hover:bg-indigo-700 cursor-pointer">
-                                            Add to Cart
+                                            <span wire:loading.remove wire:target="addToCart({{ $product->id }})">Add to Cart</span>
+                                            <span wire:loading wire:target="addToCart({{ $product->id }})">Adding...</span>
                                         </button>
                                     @endif
                                 </div>
@@ -169,7 +194,7 @@
                 </div>
 
                 <!-- Pagination -->
-                <div class="mt-12 flex justify-center">
+                {{-- <div class="mt-12 flex justify-center">
                     <nav class="flex items-center space-x-1">
                         <a href="#"
                             class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-indigo-600 hover:text-white">
@@ -200,7 +225,8 @@
                             </svg>
                         </a>
                     </nav>
-                </div>
+                </div> --}}
+                {{ $products->links() }}
             </div>
         </div>
     </div>

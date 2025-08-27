@@ -465,10 +465,12 @@ class ActionController extends Controller
             // Base validation rules
             $rules = [
                 'name' => 'required|max:255',
+                'slug' => 'required|max:255',
                 'description' => 'required',
                 'category_id' => 'required|exists:categories,id',
                 'brand_id' => 'required|exists:brands,id',
                 'product_type' => 'required|in:variant,simple',
+                'is_featured' => 'required',
                 'images' => 'required|array|max:5',
                 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ];
@@ -507,23 +509,34 @@ class ActionController extends Controller
             // Create product
             $product = Product::create([
                 'name' => $request->name,
+                'slug' => $request->slug,
                 'description' => $request->description,
+                'short_description' => $request->short_description,
                 'has_variants' => $request->product_type == 'simple' ? 0 : 1,
                 'category_id' => $request->category_id,
                 'brand_id' => $request->brand_id,
                 'sku' => $request->product_type == 'simple' ? $request->sku : null,
                 'price' => $request->product_type == 'simple' ? $request->price : null,
                 'stock' => $request->product_type == 'simple' ? $request->stock : null,
+                'is_featured' => $request->is_featured,
             ]);
 
             // Save multiple product images
             foreach ($request->file('images') as $index => $imageFile) {
                 $imagePath = $saveImage($imageFile);
 
+                $isPrimary = 0;
+
+                if ($request->primary_product_image === null) {
+                    $isPrimary = ($index === 0) ? 1 : 0;
+                } else {
+                    $isPrimary = ($request->primary_product_image == $index + 1) ? 1 : 0;
+                }
+
                 $image = ProductImage::create([
                     'product_id' => $product->id,
                     'image_url' => $imagePath,
-                    'is_primary' => $request->primary_product_image == null ? 1 : 0 ,
+                    'is_primary' => $isPrimary,
                 ]);
             }
 
@@ -540,12 +553,20 @@ class ActionController extends Controller
                         foreach ($request->file("variants.$index.images") as $key => $variantImageFile) {
                             $variantImagePath = $saveImage($variantImageFile);
 
-                            $primaryVariantImage = $variantData['primary_image'] ?? 0;
+                            $primaryVariantImage = $variantData['primary_image'] ?? null;
+
+                            $isPrimary = 0;
+
+                            if ($primaryVariantImage === null) {
+                                $isPrimary = ($key === 0) ? 1 : 0;
+                            } else {
+                                $isPrimary = ((string)$key === (string)$primaryVariantImage) ? 1 : 0;
+                            }
 
                             VariantImage::create([
                                 'variant_id' => $variant->id,
                                 'image_url' => $variantImagePath,
-                                'is_primary' => ((string)$key === (string)$primaryVariantImage) ? 1 : 0,
+                                'is_primary' => $isPrimary,
                             ]);
                         }
                     }
@@ -584,10 +605,12 @@ class ActionController extends Controller
             // Base validation rules
             $rules = [
                 'name' => 'required|max:255',
+                'slug' => 'required|max:255',
                 'description' => 'required',
                 'category_id' => 'required|exists:categories,id',
                 'brand_id' => 'required|exists:brands,id',
                 'product_type' => 'required|in:variant,simple',
+                'is_featured' => 'required',
                 'images' => 'nullable|array|max:5',
                 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ];
@@ -625,13 +648,16 @@ class ActionController extends Controller
             // Update product basic info
             $product->update([
                 'name' => $request->name,
+                'slug' => $request->slug,
                 'description' => $request->description,
+                'short_description' => $request->short_description,
                 'has_variants' => $request->product_type == 'simple' ? 0 : 1,
                 'category_id' => $request->category_id,
                 'brand_id' => $request->brand_id,
                 'sku' => $request->product_type == 'simple' ? $request->sku : null,
                 'price' => $request->product_type == 'simple' ? $request->price : null,
                 'stock' => $request->product_type == 'simple' ? $request->stock : null,
+                'is_featured' => $request->is_featured,
             ]);
 
             // Handle existing product images
@@ -643,10 +669,18 @@ class ActionController extends Controller
                 foreach ($request->file('images') as $key => $imageFile) {
                     $imagePath = $saveImage($imageFile);
 
+                    $isPrimary = 0;
+
+                    if ($request->primary_product_image === null) {
+                        $isPrimary = ($index === 0) ? 1 : 0;
+                    } else {
+                        $isPrimary = ($request->primary_product_image == $index + 1) ? 1 : 0;
+                    }
+
                     ProductImage::create([
                         'product_id' => $product->id,
                         'image_url' => $imagePath,
-                        'is_primary' => ($request->primary_product_image == $key) ? 1 : 0,
+                        'is_primary' => $isPrimary,
                     ]);
                 }
             }
@@ -692,10 +726,20 @@ class ActionController extends Controller
                         foreach ($request->file("variants.$index.images") as $key => $variantImageFile) {
                             $variantImagePath = $saveImage($variantImageFile);
 
+                            $primaryVariantImage = $variantData['primary_image'] ?? null;
+
+                            $isPrimary = 0;
+
+                            if ($primaryVariantImage === null) {
+                                $isPrimary = ($key === 0) ? 1 : 0;
+                            } else {
+                                $isPrimary = ((string)$key === (string)$primaryVariantImage) ? 1 : 0;
+                            }
+
                             VariantImage::create([
                                 'variant_id' => $variant->id,
                                 'image_url' => $variantImagePath,
-                                'is_primary' => 0, // will update later
+                                'is_primary' => $isPrimary,
                             ]);
                         }
                     }

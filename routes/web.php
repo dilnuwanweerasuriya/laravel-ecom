@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Livewire\HomePage;
 use App\Livewire\ProductsPage;
+use App\Livewire\ProductDetailsPage;
 use App\Livewire\CartPage;
 use App\Livewire\AboutPage;
 use App\Livewire\ContactPage;
@@ -162,6 +163,8 @@ Route::group([
 Route::get('/', HomePage::class);
 
 Route::get('/products', ProductsPage::class);
+
+Route::get('/products/{slug}', ProductDetailsPage::class);
 
 Route::get('/cart', CartPage::class);
 
