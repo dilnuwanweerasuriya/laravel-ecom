@@ -75,9 +75,43 @@ class ProductDetailsPage extends Component
 
     //add product to cart method
     public function addToCart($product_id){
-        $total_count = CartManagement::addItemToCartWithQty($product_id, $this->quantity);
+        $requiredAttributes = $this->product->variants->first()?->attributes->pluck('attribute_name')->map(fn($a) => strtolower($a))->unique();
+    
+        if ($requiredAttributes && count($this->selectedAttributes) < $requiredAttributes->count()) {
+            LivewireAlert::title('Please select all attributes!')
+                ->warning()
+                ->toast()
+                ->position('bottom-end')
+                ->show();
+            return;
+        }
 
-        $this->dispatch('update-cart-count', total_count: $total_count)->to(Navbar::class);
+        // Find exact matching variant
+        $variant = $this->product->variants->first(function ($v) {
+            if ($v->attributes->count() !== count($this->selectedAttributes)) {
+                return false;
+            }
+            foreach ($this->selectedAttributes as $name => $value) {
+                $attr = $v->attributes->first(fn($a) => strtolower($a->attribute_name) === $name);
+                if (!$attr || $attr->attribute_value !== $value) {
+                    return false;
+                }
+            }
+            return true;
+        });
+
+        if (!$variant) {
+            LivewireAlert::title('Please select all attributes!')
+                ->warning()
+                ->toast()
+                ->position('bottom-end')
+                ->show();
+            return;
+        }
+
+        $total_count = CartManagement::addItemToCartWithQty($product_id, $this->quantity, $variant->id);
+
+        $this->dispatch('update-cart-count', total_count: $total_count)->to(Navigation::class);
 
         LivewireAlert::title('Product added to the cart successfully!')
             ->success()

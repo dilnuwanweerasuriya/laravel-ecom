@@ -266,9 +266,9 @@
 
                     <!-- Actions -->
                     <div class="flex flex-col sm:flex-row gap-3">
-                        <button id="addToCart"
+                        <button id="addToCart" wire:click='addToCart({{ $product->id }})'
                             class="flex-1 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition">
-                            Add to Cart
+                            <span wire:loading.remove wire:target='addToCart({{ $product->id }})'>Add to cart</span><span wire:loading wire:target='addToCart({{ $product->id }})'>Adding...</span>
                         </button>
                         <button
                             class="flex-1 bg-white border border-indigo-600 text-indigo-600 px-6 py-3 rounded-lg hover:bg-indigo-50 transition">

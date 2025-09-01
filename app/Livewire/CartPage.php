@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\Attributes\Title;
+use Illuminate\Support\Facades\Auth;
 use App\Helpers\CartManagement;
 use App\Livewire\Partials\Navigation;
 use Jantinnerezo\LivewireAlert\Facades\LivewireAlert;
@@ -15,12 +16,12 @@ class CartPage extends Component
     public $grand_total;
 
     public function mount(){
-        $this->cart_items = CartManagement::getCartItemsFromCookie();
+        $this->cart_items = Auth::check() ? CartManagement::getCartItemsFromDatabase() : CartManagement::getCartItemsFromCookie();
         $this->grand_total = CartManagement::calculateGrandTotal($this->cart_items);
     }
 
-    public function removeItem($product_id){
-        $this->cart_items = CartManagement::removeCartItem($product_id);
+    public function removeItem($product_id, $variant_id = null){
+        $this->cart_items = Auth::check() ? CartManagement::removeCartItemFromDatabase($product_id,  $variant_id) : CartManagement::removeCartItemFromCookie($product_id, $variant_id);
         $this->grand_total = CartManagement::calculateGrandTotal($this->cart_items);
 
         $this->dispatch('update-cart-count', total_count: count($this->cart_items))->to(Navigation::class);

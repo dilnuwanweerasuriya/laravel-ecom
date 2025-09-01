@@ -16,7 +16,12 @@ return new class extends Migration
             $table->foreignId('cart_id')->constrained('carts')->cascadeOnDelete();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
             $table->foreignId('variant_id')->nullable()->constrained('product_variants')->nullOnDelete();
+            $table->string('name');
+            $table->string('image');
             $table->integer('quantity');
+            $table->decimal('unit_amount', 10, 2)->nullable();
+            $table->decimal('unit_amount', 10, 2)->nullable();
+            $table->json('attributes')->nullable();
         });
     }
 

@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Livewire\Auth\LoginPage;
+use App\Livewire\Auth\SignupPage;
 use App\Livewire\HomePage;
 use App\Livewire\ProductsPage;
 use App\Livewire\ProductDetailsPage;
@@ -10,6 +12,8 @@ use App\Livewire\AboutPage;
 use App\Livewire\ContactPage;
 use App\Livewire\CheckoutPage;
 use App\Livewire\SuccessPage;
+use App\Livewire\ProfilePage;
+use App\Livewire\MyOrdersPage;
 
 
 /*
@@ -160,18 +164,28 @@ Route::group([
 });
 
 
+Route::middleware('guest')->group(function(){
+    Route::get('/login', LoginPage::class);
+    Route::get('/signup', SignupPage::class);
+});
+
 Route::get('/', HomePage::class);
-
 Route::get('/products', ProductsPage::class);
-
 Route::get('/products/{slug}', ProductDetailsPage::class);
-
 Route::get('/cart', CartPage::class);
-
 Route::get('/about', AboutPage::class);
-
 Route::get('/contact', ContactPage::class);
 
-Route::get('/checkout', CheckoutPage::class);
 
-Route::get('/success-order', SuccessPage::class);
+Route::middleware('auth')->group(function(){
+    Route::get('/logout', function(){
+        Auth()->logout();
+        return redirect('/');
+    });
+    Route::get('/checkout', CheckoutPage::class);
+    Route::get('/profile', ProfilePage::class);
+    Route::get('/my-orders', MyOrdersPage::class);
+    // Route::get('/my-orders/{order_id}', MyOrderDetailPage::class)->name('my-orders.show');
+    Route::get('/success-order', SuccessPage::class)->name('success');
+    // Route::get('/cancel', CancelPage::class)->name('cancel');
+});

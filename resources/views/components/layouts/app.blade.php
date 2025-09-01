@@ -35,6 +35,7 @@
 <body class="bg-gray-50">
     {{ $slot }}
 
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @livewireScripts
 </body>
 

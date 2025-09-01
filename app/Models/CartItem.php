@@ -15,7 +15,16 @@ class CartItem extends Model
         'cart_id',
         'product_id',
         'variant_id',
+        'name',
+        'image',
         'quantity',
+        'unit_amount',
+        'total_amount',
+        'attributes',
+    ];
+
+    protected $casts = [
+        'attributes' => 'array',
     ];
 
     public function cart()
