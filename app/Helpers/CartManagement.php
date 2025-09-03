@@ -199,8 +199,15 @@ class CartManagement {
     }
 
     //clear cart items from cookie
-    static public function clearCartItems(){
+    static public function clearCartItemsFromCookies(){
         Cookie::queue(Cookie::forget('cart_items'));
+    }
+
+    //clear cart items from database
+    static public function clearCartItemsFromDatabase(){
+        $cart = Cart::where('user_id', Auth::id())->first();
+        CartItem::where('cart_id', $cart->id)->delete();
+        $cart->delete();
     }
 
     //get all cart items from cookie
@@ -215,7 +222,13 @@ class CartManagement {
 
     //get all cart items from db
     static public function getCartItemsFromDatabase(){
-        $cart_items = CartItem::where('cart_id', Auth::user()->cart->id)->get()->toArray();
+        $cart = Cart::where('user_id', Auth::id())->first();
+
+        if (!$cart) {
+            return [];
+        }
+
+        $cart_items = CartItem::where('cart_id', $cart->id)->get()->toArray();
         return $cart_items;
     }
 

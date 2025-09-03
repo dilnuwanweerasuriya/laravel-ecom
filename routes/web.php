@@ -14,6 +14,7 @@ use App\Livewire\CheckoutPage;
 use App\Livewire\SuccessPage;
 use App\Livewire\ProfilePage;
 use App\Livewire\MyOrdersPage;
+use App\Livewire\MyOrderDetailPage;
 
 
 /*
@@ -185,7 +186,7 @@ Route::middleware('auth')->group(function(){
     Route::get('/checkout', CheckoutPage::class);
     Route::get('/profile', ProfilePage::class);
     Route::get('/my-orders', MyOrdersPage::class);
-    // Route::get('/my-orders/{order_id}', MyOrderDetailPage::class)->name('my-orders.show');
+    Route::get('/my-orders/{order_id}', MyOrderDetailPage::class)->name('my-orders.show');
     Route::get('/success-order', SuccessPage::class)->name('success');
     // Route::get('/cancel', CancelPage::class)->name('cancel');
 });

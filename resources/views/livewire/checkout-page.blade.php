@@ -25,21 +25,11 @@
                         </h2>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
+                            <div class="sm:col-span-2">
                                 <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name</label>
                                 <input type="text" id="fullName" wire:model.defer="fullName" placeholder="John Doe"
                                     class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                 @error('fullName')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700">Email
-                                    Address</label>
-                                <input type="email" id="email" wire:model.defer="email"
-                                    placeholder="you@example.com"
-                                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                @error('email')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -93,6 +83,14 @@
                                     placeholder="(07#) 123-4567"
                                     class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                 @error('phone')
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label for="remarks" class="block text-sm font-medium text-gray-700">Order Remarks</label>
+                                <textarea id="remarks" wire:model.defer="remarks"
+                                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                                @error('remarks')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
                                 @enderror
                             </div>

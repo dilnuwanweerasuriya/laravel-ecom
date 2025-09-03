@@ -14,23 +14,23 @@
                 <div class="space-y-4">
                     <div class="flex justify-between">
                         <span class="text-gray-600">Order Number:</span>
-                        <span class="font-medium text-gray-800">#123456789</span>
+                        <span class="font-medium text-gray-800">#{{ $order->id }}</span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Date:</span>
-                        <span class="font-medium text-gray-800">October 10, 2023</span>
+                        <span class="font-medium text-gray-800">{{ $order->created_at->format('d-m-Y') }}</span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Total Amount:</span>
-                        <span class="font-medium text-gray-800">$760.16</span>
+                        <span class="font-medium text-gray-800">{{ Number::currency($order->total_amount, 'LKR' )}}</span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Payment Method:</span>
-                        <span class="font-medium text-gray-800">Credit Card</span>
+                        <span class="font-medium text-gray-800">{{ $order->payment_id ? $order->payment->payment_method : 'Cash on Delivery'  }}</span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Shipping Address:</span>
-                        <span class="font-medium text-gray-800">123 Main Street, San Francisco, CA 94107</span>
+                        <span class="font-medium text-gray-800">{{ $order->shipping_address }}</span>
                     </div>
                 </div>
             </div>

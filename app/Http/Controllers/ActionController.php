@@ -936,7 +936,7 @@ class ActionController extends Controller
                 ]);
 
                 $order->payemnt_id = $payment->id;
-                $order->address_id = $address->id;
+                $order->shipping_address = $address->street_address;
                 $order->save();
             }elseif ($request->payment_method == 'payhere') {
                 dd('Payhere');
