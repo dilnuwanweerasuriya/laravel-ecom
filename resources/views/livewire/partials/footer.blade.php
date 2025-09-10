@@ -64,7 +64,7 @@
             </div>
         </div>
         <div class="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p class="text-gray-400">&copy; 2023 ShopEase. All rights reserved.</p>
+            <p class="text-gray-400">&copy; <?php echo date("Y"); ?> Dilnuwan Weerasuriya. All rights reserved.</p>
             {{-- <div class="flex space-x-4 mt-4 md:mt-0">
                 <img src="https://via.placeholder.com/40x25/6B7280/ffffff?text=VISA" alt="Visa" class="h-6">
                 <img src="https://via.placeholder.com/40x25/6B7280/ffffff?text=MC" alt="Mastercard" class="h-6">
